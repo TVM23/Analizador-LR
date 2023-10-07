@@ -65,7 +65,7 @@ public class principal extends javax.swing.JFrame {
         {"I 20","I 21","err","err","err","err","err","err","err","err","err","err","I 19","err","err","err","err","err","err","err","I 31","I 17","I 18"},
         {"err","err","err","err","err","err","P 19","P 19","P 19","P 19","P 19","err","err","P 19","err","err","err","err","err","err","err","err","err"},
         {"err","err","err","err","err","err","P 20","P 20","P 20","P 20","P 20","err","err","P 20","err","err","err","err","err","err","err","err","err"},
-        {},
+        {"err","err","err","err","err","I 11","I 12","err","err","err","err","err","err","err","err","err","err","I 32","err","err","err","err","err"},
         {},
         {},
         {},

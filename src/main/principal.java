@@ -42,45 +42,45 @@ public class principal extends javax.swing.JFrame {
         {"V", ", id V"}, {"V", "; P"}, {"A", "id = S ;"}, {"S", "+ E"}, {"S", "- E"}, {"S", "E"},
         {"E", "E + T"}, {"E", "E - T"}, {"E", "T"}, {"T", "T * F"}, {"T", "T / F"}, {"T", "F"},
         {"F", "( E )"}, {"F", "id"}, {"F", "num"}}; //Priducciones de la gramatica 
-    public String[][] transicion = {
-        {"I 7","err","I 4","I 5","I 6","err","err","err","err","err","err","err","err","err","err","I1","I2","err","I 3","err","err","err","err"},
-        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P 0","err","err","err","err","err","err","err","err"},
-        {"I 8","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P 2","err","err","err","err","err","err","err","err"},
-        {"P 3","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"P 4","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"P 5","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","err","err","err","err","err","I 9","err","err","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","I 11","I 12","err","err","err","err","err","err","err","err","err","err","I 10","err","err","err","err","err"},
-        {"I 20","I 21","err","err","err","err","err","I 14","I 15","err","err","err","I 19","err","err","err","err","err","err","I 13","I 16","I 17","I 18"},
-        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P 1","err","err","err","err","err","err","err","err"},
-        {"I 22","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"I 7","err","I 4","I 5","I 6","err","err","err","err","err","err","err","err","err","err","I 23","I 2","err","I 3","err","err","err","err"},
+    public String[][] tablaSint = {
+        {"I7","err","I4","I5","I6","err","err","err","err","err","err","err","err","err","err","I1","I2","err","I3","err","err","err","err"},
+        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P0","err","err","err","err","err","err","err","err"},
+        {"I8","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P2","err","err","err","err","err","err","err","err"},
+        {"P3","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
+        {"P4","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
+        {"P5","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","err","err","err","err","err","err","I9","err","err","err","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","I11","I12","err","err","err","err","err","err","err","err","err","err","I10","err","err","err","err","err"},
+        {"I20","I21","err","err","err","err","err","I14","I15","err","err","err","I19","err","err","err","err","err","err","I13","I16","I17","I18"},
+        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P1","err","err","err","err","err","err","err","err"},
+        {"I22","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
+        {"I7","err","I4","I5","I6","err","err","err","err","err","err","err","err","err","err","I23","I2","err","I3","err","err","err","err"},
         {"err","err","err","err","err","err","I 24","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"I 20","I 21","err","err","err","err","err","err","err","err","err","err","I 19","err","err","err","err","err","err","err","I 25","I 17","I 18"},
-        {"I 20","I 21","err","err","err","err","err","err","err","err","err","err","I 19","err","err","err","err","err","err","err","I 26","I 17","I 18"},
-        {"err","err","err","err","err","err","P 11","I 27","I 28","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P 14","P 14","P 14","I 29","I 30","err","err","P 14","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P 17","P 17","P 17","P 17","P 17","err","err","P 17","err","err","err","err","err","err","err","err","err"},
-        {"I 20","I 21","err","err","err","err","err","err","err","err","err","err","I 19","err","err","err","err","err","err","err","I 31","I 17","I 18"},
-        {"err","err","err","err","err","err","P 19","P 19","P 19","P 19","P 19","err","err","P 19","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P 20","P 20","P 20","P 20","P 20","err","err","P 20","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","I 11","I 12","err","err","err","err","err","err","err","err","err","err","I 32","err","err","err","err","err"},
-        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P 7","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P 8","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P 9","I 27","I 28","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P 10","I 27","I 28","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"I 20","I 21","err","err","err","err","err","err","err","err","err","err","I 19","err","err","err","err","err","err","err","err","I 33","I 18"},
-        {"I 20","I 21","err","err","err","err","err","err","err","err","err","err","I 19","err","err","err","err","err","err","err","err","I 34","I 18"},
-        {"I 20","I 21","err","err","err","err","err","err","err","err","err","err","I 19","err","err","err","err","err","err","err","err","err","I 35"},
-        {"I 20","I 21","err","err","err","err","err","err","err","err","err","err","I 19","err","err","err","err","err","err","err","err","err","I 36"},
-        {"err","err","err","err","err","err","err","I 27","I 28","err","err","err","err","I 37","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P 6","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P 12","P 12","P 12","I 29","I 30","err","err","P 12","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P 13","P 13","P 13","I 29","I 30","err","err","P 13","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P 15","P 15","P 15","P 15","P 15","err","err","P 15","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P 16","P 16","P 16","P 16","P 16","err","err","P 16","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P 18","P 18","P 18","P 18","P 18","err","err","P 18","err","err","err","err","err","err","err","err","err"},
+        {"I20","I21","err","err","err","err","err","err","err","err","err","err","I19","err","err","err","err","err","err","err","I25","I17","I18"},
+        {"I20","I21","err","err","err","err","err","err","err","err","err","err","I19","err","err","err","err","err","err","err","I26","I17","I18"},
+        {"err","err","err","err","err","err","P11","I27","I28","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","err","P14","P14","P14","I29","I30","err","err","P14","err","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","err","P17","P17","P17","P17","P17","err","err","P17","err","err","err","err","err","err","err","err","err"},
+        {"I20","I21","err","err","err","err","err","err","err","err","err","err","I19","err","err","err","err","err","err","err","I31","I17","I18"},
+        {"err","err","err","err","err","err","P19","P19","P19","P19","P19","err","err","P19","err","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","err","P20","P20","P20","P20","P20","err","err","P20","err","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","I11","I12","err","err","err","err","err","err","err","err","err","err","I32","err","err","err","err","err"},
+        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P7","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P8","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","err","P9","I27","I28","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","err","P10","I27","I28","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
+        {"I20","I21","err","err","err","err","err","err","err","err","err","err","I19","err","err","err","err","err","err","err","err","I33","I18"},
+        {"I20","I21","err","err","err","err","err","err","err","err","err","err","I19","err","err","err","err","err","err","err","err","I34","I18"},
+        {"I20","I21","err","err","err","err","err","err","err","err","err","err","I19","err","err","err","err","err","err","err","err","err","I35"},
+        {"I20","I21","err","err","err","err","err","err","err","err","err","err","I19","err","err","err","err","err","err","err","err","err","I36"},
+        {"err","err","err","err","err","err","err","I27","I28","err","err","err","err","I37","err","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P6","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","err","P12","P12","P12","I29","I30","err","err","P12","err","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","err","P13","P13","P13","I29","I30","err","err","P13","err","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","err","P15","P15","P15","P15","P15","err","err","P15","err","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","err","P16","P16","P16","P16","P16","err","err","P16","err","err","err","err","err","err","err","err","err"},
+        {"err","err","err","err","err","err","P18","P18","P18","P18","P18","err","err","P18","err","err","err","err","err","err","err","err","err"},
     };
     String res, err;
 
@@ -111,7 +111,7 @@ public class principal extends javax.swing.JFrame {
                     while (it.hasNext()) {
                         Map.Entry<String, Token> entry = (Map.Entry) it.next();
 
-                        //AnalisisSintactico(entry.getValue().getToken(), entry.getValue().getLexema(), (entry.getValue().getnumLinea() + 1)+"");
+                        AnalisisSintactico(entry.getValue().getToken(), entry.getValue().getLexema(), (entry.getValue().getnumLinea() + 1)+"");
                         //componentes += entry.getValue().getToken()+",";
                         //System.out.println("Lexema: " + entry.getValue().getLexema() + " Token: " + entry.getValue().getToken() + " Numero de linea: " + (entry.getValue().getnumLinea() + 1));
                     }
@@ -146,15 +146,14 @@ public class principal extends javax.swing.JFrame {
     }
 
     private void AnalisisSintactico(String comp, String lexema, String nlinea) {
-        
+        System.out.println(pilaPrincipal.peek());
     }
 
     private void InicializarPilas() {
         pilaPrincipal.clear();
 //        cadena.add("$"); //Añade el terminador de cadena
-        pilaAuxiliar.push("Z");
         pilaPrincipal.push("$");
-        pilaPrincipal.push("P");
+        pilaPrincipal.push("I0");
     }
 
     private void inicializar() {

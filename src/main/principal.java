@@ -105,35 +105,24 @@ public class principal extends javax.swing.JFrame {
             while (true) {
                 Tokens token = lexico.yylex();
                 if (token == null) {
-                    //AnalisisSintactico("$", "", (infoToken.numeroLinea + 1) + ""); IMPORTANTE
-                    //componentes = "";
-                    Iterator it = lexico.tablaSimbolos.entrySet().iterator();
-                    while (it.hasNext()) {
-                        Map.Entry<String, Token> entry = (Map.Entry) it.next();
-
-                        AnalisisSintactico(entry.getValue().getToken(), entry.getValue().getLexema(), (entry.getValue().getnumLinea() + 1)+"");
-                        //componentes += entry.getValue().getToken()+",";
-                        //System.out.println("Lexema: " + entry.getValue().getLexema() + " Token: " + entry.getValue().getToken() + " Numero de linea: " + (entry.getValue().getnumLinea() + 1));
-                    }
+                    AnalisisSintactico("$", "", (lexico.posLinea + 1));
                     accion += "";
                     txtLexico.setText(accion);
                     return;
                 }
                 switch (token) {
                     case Error:
-                        errorLex += "Error lexico en la linea " + (lexico.posLinea + 1) + " simbolo: " + lexico.lexema + " incorecto" + "\n";
-                        accion += "Error lexico en la linea " + (lexico.posLinea + 1) + " simbolo: " + lexico.lexema + " incorecto" + "\n";
+                        errorLex += "Error lexico en la linea " + (lexico.posLinea + 1) + " deteccion de simbolo incorrecto: " + lexico.lexema + "\n";
+                        accion += "Error lexico en la linea " + (lexico.posLinea + 1) + " deteccion de simbolo incorrecto: " + lexico.lexema + "\n";
                         txtAreaTerminal.setText(errorLex);
                         break;
                     default:
                         if (token.getSimbolo() == null) {
                             accion += token + "\n";
-                            //AnalisisSintactico(token + "", lexico.lexema, (lexico.posLinea + 1) + "");
-                            //IMPORTANTE
+                            AnalisisSintactico(token + "", lexico.lexema, (lexico.posLinea + 1));
                         } else {
                             accion += token.getSimbolo() + "\n";
-                            //AnalisisSintactico(token.getSimbolo(), lexico.lexema, (lexico.posLinea + 1) + "");
-                            //IMPORTANTE
+                            AnalisisSintactico(token.getSimbolo(), lexico.lexema, (lexico.posLinea + 1));
                         }
                         break;
                 }
@@ -145,8 +134,43 @@ public class principal extends javax.swing.JFrame {
         }
     }
 
-    private void AnalisisSintactico(String comp, String lexema, String nlinea) {
-        System.out.println(pilaPrincipal.peek());
+    private void AnalisisSintactico(String comp, String lexema, int nlinea) {
+        String elementoPilaP, accionTabla, errorSint = "", prod, prodRedux;
+        int numEstado, columnaTabla;
+        band = true;
+        while(band){
+            elementoPilaP = pilaPrincipal.peek();
+            numEstado = Integer.parseInt(elementoPilaP.substring(1));
+            columnaTabla = columnas.indexOf(comp);
+            accionTabla = tablaSint[numEstado][columnaTabla];
+            System.out.println(comp + "cas");
+            System.out.println(numEstado + "a");
+            System.out.println(columnaTabla + "b");
+            System.out.println(accionTabla + "c");
+            if(accionTabla.equals("P0")){
+                String fin = "COMPILACION FINALIZADA CON EXITO" + "\n";
+                txtSintactico.append(fin);
+                txtAreaTerminal.append(fin);
+                return;
+            }
+            if(accionTabla.equals("err")){
+                errorSint += "Error sintactico en la linea " + (nlinea) + " se esperaba: " + elementoPilaP + "\n" +
+                        "COMPILACION FINALIZADA DEBIDO AL ERROR" + "\n";
+                txtSintactico.setText(errorSint);
+                txtAreaTerminal.append(errorSint);
+                return;
+            }
+            if(accionTabla.substring(0, 1).equals("I")){
+                pilaPrincipal.push(comp);
+                pilaPrincipal.push(accionTabla);
+                band = false;
+                break;
+            } else {
+                prod = produccionesP[Integer.parseInt(accionTabla.substring(1))][0];
+                prodRedux = produccionesP[Integer.parseInt(accionTabla.substring(1))][1];
+                String pr[] = prodRedux.split(" ");
+            }
+        }
     }
 
     private void InicializarPilas() {

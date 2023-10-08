@@ -104,7 +104,7 @@ public class principal extends javax.swing.JFrame {
             while (true) {
                 Tokens token = lexico.yylex();
                 if (token == null) {
-                    AnalisisSintactico("$", "", (lexico.posLinea + 1));
+                    AnalisisSintactico("$", (lexico.posLinea + 1));
                     accion += "";
                     txtLexico.setText(accion);
                     return;
@@ -118,10 +118,10 @@ public class principal extends javax.swing.JFrame {
                     default:
                         if (token.getSimbolo() == null) {
                             accion += token + "\n";
-                            AnalisisSintactico(token + "", lexico.lexema, (lexico.posLinea + 1));
+                            AnalisisSintactico(token + "", (lexico.posLinea + 1));
                         } else {
                             accion += token.getSimbolo() + "\n";
-                            AnalisisSintactico(token.getSimbolo(), lexico.lexema, (lexico.posLinea + 1));
+                            AnalisisSintactico(token.getSimbolo(), (lexico.posLinea + 1));
                         }
                         break;
                 }
@@ -133,15 +133,29 @@ public class principal extends javax.swing.JFrame {
         }
     }
 
-    private void AnalisisSintactico(String comp, String lexema, int nlinea) {
+    private void AnalisisSintactico(String comp, int nlinea) {
         String elementoPilaP, accionTabla, errorSint = "", prod, prodRedux;
         int numEstado, columnaTabla, nuevoEstado;
         band = true;
         while (band) {
             elementoPilaP = pilaPrincipal.peek();
+            if(elementoPilaP.equals("$")){
+                txtSintactico.append(pilaPrincipal + "\n");
+                errorSint += "Error sintactico en la linea " + (nlinea) + " se esperaba: " + pilaPrincipal.peek() + "\n"
+                        + "COMPILACION FINALIZADA DEBIDO AL ERROR" + "\n";
+                txtSintactico.append(errorSint);
+                txtAreaTerminal.append(errorSint);
+                return;
+            }
+            System.out.println(elementoPilaP);
+            System.out.println(comp);
             numEstado = Integer.parseInt(elementoPilaP.substring(1));
             columnaTabla = columnas.indexOf(comp);
             accionTabla = tablaSint[numEstado][columnaTabla];
+            System.out.println(comp + "cas");
+            System.out.println(numEstado + "a");
+            System.out.println(columnaTabla + "b");
+            System.out.println(accionTabla + "c");
             if (accionTabla.equals("P0")) {
                 String fin ="COMPILACION FINALIZADA CON EXITO" + "\n";
                 txtSintactico.append(pilaPrincipal +  "\t Genera " + accionTabla + "\n");
@@ -150,10 +164,10 @@ public class principal extends javax.swing.JFrame {
                 return;
             }
             if (accionTabla.equals("err")) {
+                txtSintactico.append(pilaPrincipal + "\n");
                 pilaPrincipal.pop();
                 errorSint += "Error sintactico en la linea " + (nlinea) + " se esperaba: " + pilaPrincipal.peek() + "\n"
                         + "COMPILACION FINALIZADA DEBIDO AL ERROR" + "\n";
-                txtSintactico.append(pilaPrincipal + "\n");
                 txtSintactico.append(errorSint);
                 txtAreaTerminal.append(errorSint);
                 return;
@@ -169,9 +183,8 @@ public class principal extends javax.swing.JFrame {
                 prodRedux = produccionesP[Integer.parseInt(accionTabla.substring(1))][1];
                 String pr[] = prodRedux.split(" ");
                 for(int i = 0; i<pr.length*2; i++) {
-                    txtSintactico.append(pilaPrincipal + "" + "\n");
+                    txtSintactico.append(pilaPrincipal + "\n");
                     pilaPrincipal.pop();
-                    txtSintactico.append(pilaPrincipal + "b" + "\n");
                 }
                 nuevoEstado = Integer.parseInt(pilaPrincipal.peek().substring(1));
                 pilaPrincipal.push(prod);
@@ -183,7 +196,6 @@ public class principal extends javax.swing.JFrame {
 
     private void InicializarPilas() {
         pilaPrincipal.clear();
-//        cadena.add("$"); //Añade el terminador de cadena
         pilaPrincipal.push("$");
         pilaPrincipal.push("I0");
     }
@@ -449,8 +461,6 @@ public class principal extends javax.swing.JFrame {
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         InicializarPilas();
         Limpiar();
-        res = "";
-        err = "";
         AnalisisLexico();
         //AnalisisSintactico("$","","");
     }//GEN-LAST:event_jButton6ActionPerformed

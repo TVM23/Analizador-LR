@@ -838,7 +838,7 @@ class Lexer {
           // fall through
           case 30: break;
           case 14:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"litcar",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return car;
+            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"car",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return car;
             }
           // fall through
           case 31: break;

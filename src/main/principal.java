@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
+import static main.Tokens.Error;
 
 public class principal extends javax.swing.JFrame {
 
@@ -28,7 +29,7 @@ public class principal extends javax.swing.JFrame {
     private SistemaArch archivo;
     Lexer lexico;
     public int cont, contant = 0;
-    public boolean band;
+    public boolean band = true;
     public Stack<String> pilaAuxiliar = new Stack();
     public Stack<String> pilaPrincipal = new Stack();
     public ArrayList<String> simbolosTerm = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char",
@@ -90,6 +91,10 @@ public class principal extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         ///Comentario importante
     }
+    
+    private void procesoComp(){
+        AnalisisLexico();
+    }
 
     private void AnalisisLexico() {
         try {
@@ -101,7 +106,7 @@ public class principal extends javax.swing.JFrame {
             lexico = new Lexer(entrada);
             String accion = "";
             String errorLex = "";
-            while (true) {
+            while (!lexico.yyatEOF() && band == true) {
                 Tokens token = lexico.yylex();
                 if (token == null) {
                     AnalisisSintactico("$", (lexico.posLinea + 1));
@@ -113,15 +118,25 @@ public class principal extends javax.swing.JFrame {
                     case Error:
                         errorLex += "Error lexico en la linea " + (lexico.posLinea + 1) + " deteccion de simbolo incorrecto: " + lexico.lexema + "\n";
                         accion += "Error lexico en la linea " + (lexico.posLinea + 1) + " deteccion de simbolo incorrecto: " + lexico.lexema + "\n";
+                        txtLexico.setText(accion);
                         txtAreaTerminal.setText(errorLex);
                         break;
+                        //band = false;
+                        //return;
                     default:
+                        System.out.println("token.getsimbol "+ token.getSimbolo());
+                        System.out.println("token "+ token+"");
+                        System.out.println("lexema "+ lexico.lexema);
                         if (token.getSimbolo() == null) {
                             accion += token + "\n";
                             AnalisisSintactico(token + "", (lexico.posLinea + 1));
+                            System.out.println("accion "+accion);
+                            txtLexico.setText(accion);
                         } else {
                             accion += token.getSimbolo() + "\n";
                             AnalisisSintactico(token.getSimbolo(), (lexico.posLinea + 1));
+                            System.out.println("accion "+accion);
+                            txtLexico.setText(accion);
                         }
                         break;
                 }
@@ -136,12 +151,9 @@ public class principal extends javax.swing.JFrame {
     private void AnalisisSintactico(String comp, int nlinea) {
         String elementoPilaP, accionTabla, errorSint = "", prod, prodRedux;
         int numEstado, columnaTabla, nuevoEstado;
-        band = true;
-        while (band) {
+        boolean banderaProd = true;
+        while (banderaProd) {
             elementoPilaP = pilaPrincipal.peek();
-            if(comp.equals("S")){
-                break;
-            }
             System.out.println(elementoPilaP);
             System.out.println(comp);
             numEstado = Integer.parseInt(elementoPilaP.substring(1));
@@ -165,13 +177,14 @@ public class principal extends javax.swing.JFrame {
                         + "COMPILACION FINALIZADA DEBIDO AL ERROR" + "\n";
                 txtSintactico.append(errorSint);
                 txtAreaTerminal.append(errorSint);
+                band = false;
                 return;
             }
             if (accionTabla.substring(0, 1).equals("I")) {
                 pilaPrincipal.push(comp);
                 pilaPrincipal.push(accionTabla);
                 txtSintactico.append(pilaPrincipal + "\n");
-                band = false;
+                banderaProd = false;
                 break;
             } else {
                 prod = produccionesP[Integer.parseInt(accionTabla.substring(1))][0];
@@ -382,12 +395,6 @@ public class principal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    @Override
-    public Image getIconImage() {
-        Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("icons/IconoIDE.png"));
-        return retValue;
-    }
-
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         txtLexico.setText("");
         archivo.Nuevo(this);
@@ -456,8 +463,8 @@ public class principal extends javax.swing.JFrame {
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         InicializarPilas();
         Limpiar();
-        AnalisisLexico();
-        //AnalisisSintactico("$","","");
+        band = true;
+        procesoComp();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     /**

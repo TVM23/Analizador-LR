@@ -139,13 +139,8 @@ public class principal extends javax.swing.JFrame {
         band = true;
         while (band) {
             elementoPilaP = pilaPrincipal.peek();
-            if(elementoPilaP.equals("$")){
-                txtSintactico.append(pilaPrincipal + "\n");
-                errorSint += "Error sintactico en la linea " + (nlinea) + " se esperaba: " + pilaPrincipal.peek() + "\n"
-                        + "COMPILACION FINALIZADA DEBIDO AL ERROR" + "\n";
-                txtSintactico.append(errorSint);
-                txtAreaTerminal.append(errorSint);
-                return;
+            if(comp.equals("S")){
+                break;
             }
             System.out.println(elementoPilaP);
             System.out.println(comp);

@@ -31,10 +31,10 @@ public class principal extends javax.swing.JFrame {
     public boolean band;
     public Stack<String> pilaAuxiliar = new Stack();
     public Stack<String> pilaPrincipal = new Stack();
-    public ArrayList<String> simbolosTerm = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char", 
+    public ArrayList<String> simbolosTerm = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char",
             ",", ";", "+", "-", "*", "/", "=", "(", ")")); //Simbolos terminales o tokens
-    public ArrayList<String> columnas = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char", 
-            ",", ";", "+", "-", "*", "/", "=", "(", ")", "$", "P", "Tipo", 
+    public ArrayList<String> columnas = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char",
+            ",", ";", "+", "-", "*", "/", "=", "(", ")", "$", "P", "Tipo",
             "V", "A", "S", "E", "T", "F")); //Columnas de la tabla sintactica
     public String componente; //Va guardando de uno por uno los componentes del arreglo durante el for
     public String produccionesP[][] = {
@@ -43,45 +43,44 @@ public class principal extends javax.swing.JFrame {
         {"E", "E + T"}, {"E", "E - T"}, {"E", "T"}, {"T", "T * F"}, {"T", "T / F"}, {"T", "F"},
         {"F", "( E )"}, {"F", "id"}, {"F", "num"}}; //Priducciones de la gramatica 
     public String[][] tablaSint = {
-        {"I7","err","I4","I5","I6","err","err","err","err","err","err","err","err","err","err","I1","I2","err","I3","err","err","err","err"},
-        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P0","err","err","err","err","err","err","err","err"},
-        {"I8","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P2","err","err","err","err","err","err","err","err"},
-        {"P3","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"P4","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"P5","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","err","err","err","err","err","I9","err","err","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","I11","I12","err","err","err","err","err","err","err","err","err","err","I10","err","err","err","err","err"},
-        {"I20","I21","err","err","err","err","err","I14","I15","err","err","err","I19","err","err","err","err","err","err","I13","I16","I17","I18"},
-        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P1","err","err","err","err","err","err","err","err"},
-        {"I22","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"I7","err","I4","I5","I6","err","err","err","err","err","err","err","err","err","err","I23","I2","err","I3","err","err","err","err"},
-        {"err","err","err","err","err","err","I 24","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"I20","I21","err","err","err","err","err","err","err","err","err","err","I19","err","err","err","err","err","err","err","I25","I17","I18"},
-        {"I20","I21","err","err","err","err","err","err","err","err","err","err","I19","err","err","err","err","err","err","err","I26","I17","I18"},
-        {"err","err","err","err","err","err","P11","I27","I28","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P14","P14","P14","I29","I30","err","err","P14","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P17","P17","P17","P17","P17","err","err","P17","err","err","err","err","err","err","err","err","err"},
-        {"I20","I21","err","err","err","err","err","err","err","err","err","err","I19","err","err","err","err","err","err","err","I31","I17","I18"},
-        {"err","err","err","err","err","err","P19","P19","P19","P19","P19","err","err","P19","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P20","P20","P20","P20","P20","err","err","P20","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","I11","I12","err","err","err","err","err","err","err","err","err","err","I32","err","err","err","err","err"},
-        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P7","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P8","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P9","I27","I28","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P10","I27","I28","err","err","err","err","err","err","err","err","err","err","err","err","err","err"},
-        {"I20","I21","err","err","err","err","err","err","err","err","err","err","I19","err","err","err","err","err","err","err","err","I33","I18"},
-        {"I20","I21","err","err","err","err","err","err","err","err","err","err","I19","err","err","err","err","err","err","err","err","I34","I18"},
-        {"I20","I21","err","err","err","err","err","err","err","err","err","err","I19","err","err","err","err","err","err","err","err","err","I35"},
-        {"I20","I21","err","err","err","err","err","err","err","err","err","err","I19","err","err","err","err","err","err","err","err","err","I36"},
-        {"err","err","err","err","err","err","err","I27","I28","err","err","err","err","I37","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","err","err","err","err","err","err","err","err","P6","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P12","P12","P12","I29","I30","err","err","P12","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P13","P13","P13","I29","I30","err","err","P13","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P15","P15","P15","P15","P15","err","err","P15","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P16","P16","P16","P16","P16","err","err","P16","err","err","err","err","err","err","err","err","err"},
-        {"err","err","err","err","err","err","P18","P18","P18","P18","P18","err","err","P18","err","err","err","err","err","err","err","err","err"},
-    };
+        {"I7", "err", "I4", "I5", "I6", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I1", "I2", "err", "I3", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "P0", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"I8", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "P2", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"P3", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"P4", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"P5", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I9", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "I11", "I12", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I10", "err", "err", "err", "err", "err"},
+        {"I20", "I21", "err", "err", "err", "err", "err", "I14", "I15", "err", "err", "err", "I19", "err", "err", "err", "err", "err", "err", "I13", "I16", "I17", "I18"},
+        {"err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "P1", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"I22", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"I7", "err", "I4", "I5", "I6", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I23", "I2", "err", "I3", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "I24", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"I20", "I21", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I19", "err", "err", "err", "err", "err", "err", "err", "I25", "I17", "I18"},
+        {"I20", "I21", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I19", "err", "err", "err", "err", "err", "err", "err", "I26", "I17", "I18"},
+        {"err", "err", "err", "err", "err", "err", "P11", "I27", "I28", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "P14", "P14", "P14", "I29", "I30", "err", "err", "P14", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "P17", "P17", "P17", "P17", "P17", "err", "err", "P17", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"I20", "I21", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I19", "err", "err", "err", "err", "err", "err", "err", "I31", "I17", "I18"},
+        {"err", "err", "err", "err", "err", "err", "P19", "P19", "P19", "P19", "P19", "err", "err", "P19", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "P20", "P20", "P20", "P20", "P20", "err", "err", "P20", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "I11", "I12", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I32", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "P7", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "P8", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "P9", "I27", "I28", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "P10", "I27", "I28", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"I20", "I21", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I19", "err", "err", "err", "err", "err", "err", "err", "err", "I33", "I18"},
+        {"I20", "I21", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I19", "err", "err", "err", "err", "err", "err", "err", "err", "I34", "I18"},
+        {"I20", "I21", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I19", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I35"},
+        {"I20", "I21", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I19", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I36"},
+        {"err", "err", "err", "err", "err", "err", "err", "I27", "I28", "err", "err", "err", "err", "I37", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "P6", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "P12", "P12", "P12", "I29", "I30", "err", "err", "P12", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "P13", "P13", "P13", "I29", "I30", "err", "err", "P13", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "P15", "P15", "P15", "P15", "P15", "err", "err", "P15", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "P16", "P16", "P16", "P16", "P16", "err", "err", "P16", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
+        {"err", "err", "err", "err", "err", "err", "P18", "P18", "P18", "P18", "P18", "err", "err", "P18", "err", "err", "err", "err", "err", "err", "err", "err", "err"},};
     String res, err;
 
     public principal() {
@@ -136,39 +135,48 @@ public class principal extends javax.swing.JFrame {
 
     private void AnalisisSintactico(String comp, String lexema, int nlinea) {
         String elementoPilaP, accionTabla, errorSint = "", prod, prodRedux;
-        int numEstado, columnaTabla;
+        int numEstado, columnaTabla, nuevoEstado;
         band = true;
-        while(band){
+        while (band) {
             elementoPilaP = pilaPrincipal.peek();
             numEstado = Integer.parseInt(elementoPilaP.substring(1));
             columnaTabla = columnas.indexOf(comp);
             accionTabla = tablaSint[numEstado][columnaTabla];
-            System.out.println(comp + "cas");
-            System.out.println(numEstado + "a");
-            System.out.println(columnaTabla + "b");
-            System.out.println(accionTabla + "c");
-            if(accionTabla.equals("P0")){
-                String fin = "COMPILACION FINALIZADA CON EXITO" + "\n";
+            if (accionTabla.equals("P0")) {
+                String fin ="COMPILACION FINALIZADA CON EXITO" + "\n";
+                txtSintactico.append(pilaPrincipal +  "\t Genera " + accionTabla + "\n");
                 txtSintactico.append(fin);
                 txtAreaTerminal.append(fin);
                 return;
             }
-            if(accionTabla.equals("err")){
-                errorSint += "Error sintactico en la linea " + (nlinea) + " se esperaba: " + elementoPilaP + "\n" +
-                        "COMPILACION FINALIZADA DEBIDO AL ERROR" + "\n";
-                txtSintactico.setText(errorSint);
+            if (accionTabla.equals("err")) {
+                pilaPrincipal.pop();
+                errorSint += "Error sintactico en la linea " + (nlinea) + " se esperaba: " + pilaPrincipal.peek() + "\n"
+                        + "COMPILACION FINALIZADA DEBIDO AL ERROR" + "\n";
+                txtSintactico.append(pilaPrincipal + "\n");
+                txtSintactico.append(errorSint);
                 txtAreaTerminal.append(errorSint);
                 return;
             }
-            if(accionTabla.substring(0, 1).equals("I")){
+            if (accionTabla.substring(0, 1).equals("I")) {
                 pilaPrincipal.push(comp);
                 pilaPrincipal.push(accionTabla);
+                txtSintactico.append(pilaPrincipal + "\n");
                 band = false;
                 break;
             } else {
                 prod = produccionesP[Integer.parseInt(accionTabla.substring(1))][0];
                 prodRedux = produccionesP[Integer.parseInt(accionTabla.substring(1))][1];
                 String pr[] = prodRedux.split(" ");
+                for(int i = 0; i<pr.length*2; i++) {
+                    txtSintactico.append(pilaPrincipal + "" + "\n");
+                    pilaPrincipal.pop();
+                    txtSintactico.append(pilaPrincipal + "b" + "\n");
+                }
+                nuevoEstado = Integer.parseInt(pilaPrincipal.peek().substring(1));
+                pilaPrincipal.push(prod);
+                pilaPrincipal.push(tablaSint[nuevoEstado][columnas.indexOf(prod)]);
+                txtSintactico.append(pilaPrincipal + "\n");
             }
         }
     }

@@ -150,7 +150,7 @@ public class principal extends javax.swing.JFrame {
             if (accionTabla.equals("err")) {
                 txtSintactico.append(pilaPrincipal + "\t Se genera un error \n");
                 pilaPrincipal.pop();
-                errorSint += "Error sintactico en la linea " + (nlinea) + " se esperaba: " + pilaPrincipal.peek() + "\n"
+                errorSint += "Error sintactico en la linea " + (nlinea) + " se esperaba: " + TipoErrorSint(pilaPrincipal.peek()) + "\n"
                         + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SINTACTICO DETECTADO" + "\n";
                 txtSintactico.append(errorSint);
                 txtAreaTerminal.append(errorSint);
@@ -179,9 +179,24 @@ public class principal extends javax.swing.JFrame {
     
     private String TipoErrorSint(String objPila){
         String error = "";
-            if(objPila.equals("err")){
-                return error = "";
-            }
+        switch (objPila){
+            case "P":
+                return error = "Una definicion o identificador";
+            case "Tipo":
+                return error = "Una definicion de entero, flotante o caracter";
+            case "V":
+                return error = "Una , o ;";
+            case "A":
+                return error = "Una asignacion de identificador";
+            case "S":
+            case "E":
+            case "T":
+                return error = "Una expresión";
+            case "F":
+                return error = "Una definicion o asignacion";
+            case "id":
+                return error = "A";
+        }
         return error;
     }
 

@@ -57,13 +57,7 @@ class Token {
 %}
 
 terminadorLinea = \r|\n|\r\n
-entradaCaracter = [^\r\n]
 espacioVacio = {terminadorLinea} | [ \t\f]
-comentTrad = "/*" [^*] ~"*/" | "/*" "*"+ "/"
-finLineaComent = "//" {entradaCaracter}* {terminadorLinea}?
-contenidoComent = ( [^*] | \*+ [^/*] )*
-comentDocumentacion = "/**" {contenidoComent} "*"+ "/"
-comentario = {comentTrad} | {finLineaComent} | {comentDocumentacion}
 
 letra = [a-zA-ZñÑ_$á-źÁ-Ź]
 digito = [0-9]
@@ -75,7 +69,7 @@ num = {entero} | {flotante}
 id = {letra}({letra}|{digito})*
 %%
 
-{comentario}|{espacioVacio} { /* Ignorar */ }
+{espacioVacio} { /* Saltar */ }
 
 /* tipo de valor para asignacion */
 "int" {posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"int",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return entero;}

@@ -98,7 +98,7 @@ public class principal extends javax.swing.JFrame {
                 Tokens token = lexico.yylex();
                 if (token == null) {
                     AnalisisSintactico("$", (lexico.posLinea + 1));
-                    lexRec += "";
+                    lexRec += "Análisis léxico finalizado";
                     txtLexico.setText(lexRec);
                     return;
                 }
@@ -133,15 +133,18 @@ public class principal extends javax.swing.JFrame {
     private void AnalisisSintactico(String token, int nlinea) {
         String elementoPilaP, accionTabla, errorSint = "", prod, prodRedux;
         int numEstado, columnaTabla, nuevoEstado;
-        boolean banderaProd = true;
-        while (banderaProd) {
+        while (true) {
             elementoPilaP = pilaPrincipal.peek();
             numEstado = Integer.parseInt(elementoPilaP.substring(1));
             columnaTabla = columnas.indexOf(token);
             accionTabla = tablaSint[numEstado][columnaTabla];
             if (accionTabla.equals("P0")) {
-                String fin ="COMPILACION FINALIZADA CON EXITO" + "\n";
-                String sintFin = "Analisis Sintactico Finalizado" + "\n";
+                String fin ="""
+                            COMPILACION FINALIZADA CON EXITO
+                            """;
+                String sintFin = """
+                                 Analisis Sintactico Finalizado
+                                 """;
                 txtSintactico.append(pilaPrincipal +  "\t Se genera " + accionTabla + ". Se acepta la cadena \n");
                 txtSintactico.append(sintFin);
                 txtAreaTerminal.append(fin);
@@ -179,23 +182,43 @@ public class principal extends javax.swing.JFrame {
     
     private String TipoErrorSint(String objPila){
         String error = "";
-        switch (objPila){
-            case "P":
-                return error = "Una definicion o identificador";
-            case "Tipo":
-                return error = "Una definicion de entero, flotante o caracter";
-            case "V":
-                return error = "Una , o ;";
-            case "A":
-                return error = "Una asignacion de identificador";
-            case "S":
-            case "E":
-            case "T":
-                return error = "Una expresión";
-            case "F":
-                return error = "Una definicion o asignacion";
-            case "id":
-                return error = "A";
+        if(simbolosTerm.contains(objPila)){
+            switch (objPila) {
+                case "id":
+                case "num":
+                case "int":
+                case "float":
+                case "char":
+                case ",":
+                case ";":
+                case "+":
+                case "-":
+                case "*":
+                case "/":
+                case "=":
+                case "(":
+                case ")":
+                    return error = "AS";
+            }
+            
+        }else{
+            switch (objPila){
+                case "$":
+                case "P":
+                    return error = "Una definicion o identificador";
+                case "Tipo":
+                    return error = "Una definicion de entero, flotante o caracter";
+                case "V":
+                    return error = "Una , o ;";
+                case "A":
+                    return error = "Una asignacion de identificador";
+                case "S":
+                case "E":
+                case "T":
+                case "F":
+                    return error = "Una definicion o asignacion";
+            }
+            return error;
         }
         return error;
     }

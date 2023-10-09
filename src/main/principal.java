@@ -1,11 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package main;
 
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,8 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -28,21 +21,18 @@ public class principal extends javax.swing.JFrame {
     private LineaNum numlinea;
     private SistemaArch archivo;
     Lexer lexico;
-    public int cont, contant = 0;
     public boolean band = true;
-    public Stack<String> pilaAuxiliar = new Stack();
     public Stack<String> pilaPrincipal = new Stack();
     public ArrayList<String> simbolosTerm = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char",
             ",", ";", "+", "-", "*", "/", "=", "(", ")")); //Simbolos terminales o tokens
     public ArrayList<String> columnas = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char",
             ",", ";", "+", "-", "*", "/", "=", "(", ")", "$", "P", "Tipo",
             "V", "A", "S", "E", "T", "F")); //Columnas de la tabla sintactica
-    public String componente; //Va guardando de uno por uno los componentes del arreglo durante el for
     public String produccionesP[][] = {
         {"P'", "P"}, {"P", "Tipo id V"}, {"P", "A"}, {"Tipo", "int"}, {"Tipo", "float"}, {"Tipo", "char"},
         {"V", ", id V"}, {"V", "; P"}, {"A", "id = S ;"}, {"S", "+ E"}, {"S", "- E"}, {"S", "E"},
         {"E", "E + T"}, {"E", "E - T"}, {"E", "T"}, {"T", "T * F"}, {"T", "T / F"}, {"T", "F"},
-        {"F", "( E )"}, {"F", "id"}, {"F", "num"}}; //Priducciones de la gramatica 
+        {"F", "( E )"}, {"F", "id"}, {"F", "num"}}; //Producciones de la gramatica 
     public String[][] tablaSint = {
         {"I7", "err", "I4", "I5", "I6", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "I1", "I2", "err", "I3", "err", "err", "err", "err"},
         {"err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "err", "P0", "err", "err", "err", "err", "err", "err", "err", "err"},
@@ -82,14 +72,12 @@ public class principal extends javax.swing.JFrame {
         {"err", "err", "err", "err", "err", "err", "P15", "P15", "P15", "P15", "P15", "err", "err", "P15", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
         {"err", "err", "err", "err", "err", "err", "P16", "P16", "P16", "P16", "P16", "err", "err", "P16", "err", "err", "err", "err", "err", "err", "err", "err", "err"},
         {"err", "err", "err", "err", "err", "err", "P18", "P18", "P18", "P18", "P18", "err", "err", "P18", "err", "err", "err", "err", "err", "err", "err", "err", "err"},};
-    String res, err;
 
     public principal() {
         initComponents();
-        inicializar();
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        Inicio();
         setLocationRelativeTo(null);
-        ///Comentario importante
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }
     
     private void procesoComp(){
@@ -104,43 +92,37 @@ public class principal extends javax.swing.JFrame {
             output.write(bytes);
             BufferedReader entrada = new BufferedReader(new InputStreamReader(new FileInputStream(codigo), "UTF-8"));
             lexico = new Lexer(entrada);
-            String accion = "";
+            String  lexRec = "";
             String errorLex = "";
             while (!lexico.yyatEOF() && band == true) {
                 Tokens token = lexico.yylex();
                 if (token == null) {
                     AnalisisSintactico("$", (lexico.posLinea + 1));
-                    accion += "";
-                    txtLexico.setText(accion);
+                    lexRec += "";
+                    txtLexico.setText(lexRec);
                     return;
                 }
                 switch (token) {
-                    case Error:
-                        errorLex += "Error lexico en la linea " + (lexico.posLinea + 1) + " deteccion de simbolo incorrecto: " + lexico.lexema + "\n";
-                        accion += "Error lexico en la linea " + (lexico.posLinea + 1) + " deteccion de simbolo incorrecto: " + lexico.lexema + "\n";
-                        txtLexico.setText(accion);
+                    case Error -> {
+                        errorLex += "Error lexico en la linea " + (lexico.posLinea + 1) + " debido a la deteccion de un simbolo inapropiado: " + lexico.lexema + "\n";
+                        lexRec += "Error lexico en la linea " + (lexico.posLinea + 1) + " debido a la deteccion deteccion de un simbolo inapropiado: " + lexico.lexema + "\n";
+                        txtLexico.setText(lexRec);
                         txtAreaTerminal.setText(errorLex);
-                        break;
                         //band = false;
                         //return;
-                    default:
-                        System.out.println("token.getsimbol "+ token.getSimbolo());
-                        System.out.println("token "+ token+"");
-                        System.out.println("lexema "+ lexico.lexema);
-                        if (token.getSimbolo() == null) {
-                            accion += token + "\n";
+                    }
+                    default -> {
+                        if (token.getValor()== null) {
+                            lexRec += token + "\n";
                             AnalisisSintactico(token + "", (lexico.posLinea + 1));
-                            System.out.println("accion "+accion);
-                            txtLexico.setText(accion);
+                            txtLexico.setText(lexRec);
                         } else {
-                            accion += token.getSimbolo() + "\n";
-                            AnalisisSintactico(token.getSimbolo(), (lexico.posLinea + 1));
-                            System.out.println("accion "+accion);
-                            txtLexico.setText(accion);
+                            lexRec += token.getValor()+ "\n";
+                            AnalisisSintactico(token.getValor(), (lexico.posLinea + 1));
+                            txtLexico.setText(lexRec);
                         }
-                        break;
-                }
-            }
+                    }
+                }                            }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(principal.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -148,58 +130,59 @@ public class principal extends javax.swing.JFrame {
         }
     }
 
-    private void AnalisisSintactico(String comp, int nlinea) {
+    private void AnalisisSintactico(String token, int nlinea) {
         String elementoPilaP, accionTabla, errorSint = "", prod, prodRedux;
         int numEstado, columnaTabla, nuevoEstado;
         boolean banderaProd = true;
         while (banderaProd) {
             elementoPilaP = pilaPrincipal.peek();
-            System.out.println(elementoPilaP);
-            System.out.println(comp);
             numEstado = Integer.parseInt(elementoPilaP.substring(1));
-            columnaTabla = columnas.indexOf(comp);
+            columnaTabla = columnas.indexOf(token);
             accionTabla = tablaSint[numEstado][columnaTabla];
-            System.out.println(comp + "cas");
-            System.out.println(numEstado + "a");
-            System.out.println(columnaTabla + "b");
-            System.out.println(accionTabla + "c");
             if (accionTabla.equals("P0")) {
                 String fin ="COMPILACION FINALIZADA CON EXITO" + "\n";
-                txtSintactico.append(pilaPrincipal +  "\t Genera " + accionTabla + "\n");
-                txtSintactico.append(fin);
+                String sintFin = "Analisis Sintactico Finalizado" + "\n";
+                txtSintactico.append(pilaPrincipal +  "\t Se genera " + accionTabla + ". Se acepta la cadena \n");
+                txtSintactico.append(sintFin);
                 txtAreaTerminal.append(fin);
                 return;
             }
             if (accionTabla.equals("err")) {
-                txtSintactico.append(pilaPrincipal + "\n");
+                txtSintactico.append(pilaPrincipal + "\t Se genera un error \n");
                 pilaPrincipal.pop();
                 errorSint += "Error sintactico en la linea " + (nlinea) + " se esperaba: " + pilaPrincipal.peek() + "\n"
-                        + "COMPILACION FINALIZADA DEBIDO AL ERROR" + "\n";
+                        + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SINTACTICO DETECTADO" + "\n";
                 txtSintactico.append(errorSint);
                 txtAreaTerminal.append(errorSint);
                 band = false;
                 return;
             }
             if (accionTabla.substring(0, 1).equals("I")) {
-                pilaPrincipal.push(comp);
+                txtSintactico.append(pilaPrincipal + "\t Desplaza "+token+" a "+accionTabla+"\n");
+                pilaPrincipal.push(token);
                 pilaPrincipal.push(accionTabla);
-                txtSintactico.append(pilaPrincipal + "\n");
-                banderaProd = false;
-                break;
+                return;
             } else {
                 prod = produccionesP[Integer.parseInt(accionTabla.substring(1))][0];
                 prodRedux = produccionesP[Integer.parseInt(accionTabla.substring(1))][1];
                 String pr[] = prodRedux.split(" ");
+                txtSintactico.append(pilaPrincipal + "\t Se  genera "+accionTabla+" "+prod+"->"+prodRedux+"\n");
                 for(int i = 0; i<pr.length*2; i++) {
-                    txtSintactico.append(pilaPrincipal + "\n");
                     pilaPrincipal.pop();
                 }
                 nuevoEstado = Integer.parseInt(pilaPrincipal.peek().substring(1));
                 pilaPrincipal.push(prod);
                 pilaPrincipal.push(tablaSint[nuevoEstado][columnas.indexOf(prod)]);
-                txtSintactico.append(pilaPrincipal + "\n");
             }
         }
+    }
+    
+    private String TipoErrorSint(String objPila){
+        String error = "";
+            if(objPila.equals("err")){
+                return error = "";
+            }
+        return error;
     }
 
     private void InicializarPilas() {
@@ -208,29 +191,26 @@ public class principal extends javax.swing.JFrame {
         pilaPrincipal.push("I0");
     }
 
-    private void inicializar() {
+    private void Inicio() {
         archivo = new SistemaArch();
         setTitle("Compilador LR");
         numlinea = new LineaNum(txtCodigoBase);
         jScrollPane2.setRowHeaderView(numlinea);
     }
 
-    private void Cerrar() {
+    private void CierreProg() {
         String opciones[] = {"Cerrar", "Cancelar"};
-        int eleccion = JOptionPane.showOptionDialog(this, "¿Estas seguro de que quieres cerrar el programa? Todo cambio sin guardar se perdera", "Cierre de programa", 0, 0, null, opciones, EXIT_ON_CLOSE);
+        int eleccion = JOptionPane.showOptionDialog(this, "¿Estas seguro de cerrar el programa? Toda accion sin guardar se perderá", "Cerrar programa", 0, 0, null, opciones, EXIT_ON_CLOSE);
         if (eleccion == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
-    }
-
-    public void LimpiarComp() {
-
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtCodigoBase = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -247,6 +227,7 @@ public class principal extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -263,6 +244,9 @@ public class principal extends javax.swing.JFrame {
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         txtCodigoBase.setColumns(20);
         txtCodigoBase.setRows(5);
         txtCodigoBase.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -272,19 +256,19 @@ public class principal extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(txtCodigoBase);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(21, 53, 500, 260));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(21, 73, 500, 250));
 
+        txtLexico.setEditable(false);
         txtLexico.setColumns(20);
         txtLexico.setRows(5);
         jScrollPane3.setViewportView(txtLexico);
 
-        getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 70, 506, 180));
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 70, 506, 110));
 
         jToolBar1.setBackground(new java.awt.Color(255, 255, 255));
         jToolBar1.setRollover(true);
 
         btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/nuevo-arch_24.png"))); // NOI18N
-        btnNuevo.setFocusable(false);
         btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnNuevo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnNuevo.addActionListener(new java.awt.event.ActionListener() {
@@ -295,7 +279,6 @@ public class principal extends javax.swing.JFrame {
         jToolBar1.add(btnNuevo);
 
         btnArchivo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/abrir-documento-24.png"))); // NOI18N
-        btnArchivo.setFocusable(false);
         btnArchivo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnArchivo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnArchivo.addActionListener(new java.awt.event.ActionListener() {
@@ -306,7 +289,6 @@ public class principal extends javax.swing.JFrame {
         jToolBar1.add(btnArchivo);
 
         btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/guardar-24.png"))); // NOI18N
-        btnGuardar.setFocusable(false);
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnGuardar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -316,8 +298,7 @@ public class principal extends javax.swing.JFrame {
         });
         jToolBar1.add(btnGuardar);
 
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/icons8-play-24.png"))); // NOI18N
-        jButton6.setFocusable(false);
+        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/compilar-24.png"))); // NOI18N
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton6.addActionListener(new java.awt.event.ActionListener() {
@@ -327,28 +308,35 @@ public class principal extends javax.swing.JFrame {
         });
         jToolBar1.add(jButton6);
 
-        getContentPane().add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1116, 35));
+        jPanel1.add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1116, 35));
 
+        txtSintactico.setEditable(false);
         txtSintactico.setColumns(20);
         txtSintactico.setRows(5);
         jScrollPane4.setViewportView(txtSintactico);
 
-        getContentPane().add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 300, 506, 180));
+        jPanel1.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 220, 506, 260));
 
+        txtAreaTerminal.setEditable(false);
         txtAreaTerminal.setColumns(20);
         txtAreaTerminal.setRows(5);
         jScrollPane1.setViewportView(txtAreaTerminal);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, 500, 130));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 360, 500, 120));
 
         jLabel1.setText("Terminal");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 330, 100, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, 100, -1));
 
-        jLabel2.setText("Análisis Léxico");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 50, 100, -1));
+        jLabel2.setText("Panel Principal");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 100, -1));
 
         jLabel3.setText("Análisis Sintáctico");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 280, 100, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 200, 100, -1));
+
+        jLabel4.setText("Análisis Léxico");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 50, 100, -1));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1120, 510));
 
         jMenu1.setText("Archivo");
 
@@ -402,7 +390,7 @@ public class principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        Cerrar();
+        CierreProg();
     }//GEN-LAST:event_formWindowClosing
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -424,30 +412,27 @@ public class principal extends javax.swing.JFrame {
     private void txtCodigoBaseKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoBaseKeyReleased
         int key = evt.getKeyCode();
         //if (KeyEvent.getKeyText(key).length() > 0) {
-        if ((key >= 65 && key <= 90) || (key >= 48 && key <= 57) || (key >= 97 && key <= 122) || (key != 27 && (key >= 37
-                && key <= 40) && !(key >= 16 && key <= 18) && key != 524 && key != 20)) {
+        if ((key >= 65 && key <= 90) || (key >= 48 && key <= 59) || (key >= 97 && key <= 122) || (key != 27 && (key >= 37
+                && key <= 40) && !(key >= 16 && key <= 18) && key != 524 && key != 20) || 
+                (key == 40) || (key == 41) || (key == 91) || (key == 93) || (key == 61) || (key == 45)
+                || (key == 56) || (key == 47) || (key == 61) || (key == 44) || (key == 39) || (key == 34)
+                || (key == 127) || (key == 46)) {
             if (!getTitle().contains("*")) {
                 setTitle(getTitle() + "*");
             }
-            // Analisis dinamico
-            //InicializarPilas();
-            //res = "";
-            //err = "";
-            //AnalisisLexico();
-            //AnalisisSintactico("$","","");
         }
     }//GEN-LAST:event_txtCodigoBaseKeyReleased
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
         txtLexico.setText("");
         archivo.Nuevo(this);
-        LimpiarComp();
+        Limpiar();
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void btnArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnArchivoActionPerformed
         txtLexico.setText("");
         archivo.Abrir(this);
-        LimpiarComp();
+        Limpiar();
     }//GEN-LAST:event_btnArchivoActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
@@ -510,12 +495,14 @@ public class principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;

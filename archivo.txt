@@ -1,2 +1,1 @@
-int x, r, s; float s, x1, q; char a, b, c;
- q = 40 + 4 - (e/2) * 3;
+g

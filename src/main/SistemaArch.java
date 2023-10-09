@@ -249,7 +249,6 @@ public class SistemaArch {
                         if(t!=null){
                             compF.txtCodigoBase.setText(t);
                             compF.setTitle(tFile.getName());
-                            compF.LimpiarComp();
                             selectFile = tSelecFile;
                             file = tFile;
                         }

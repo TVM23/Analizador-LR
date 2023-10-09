@@ -19,17 +19,17 @@ public enum Tokens {
     PuntoComa(";"),
     Error;
     
-    private final String simbolo;
+    private final String valorTok;
 
     private Tokens() {
-        this.simbolo = null;
+        this.valorTok = null;
     }
 
-    private Tokens(String simbolo) {
-        this.simbolo = simbolo;
+    private Tokens(String valorTok) {
+        this.valorTok = valorTok;
     }
 
-    public String getSimbolo() {
-        return simbolo;
+    public String getValor() {
+        return valorTok;
     }
 }

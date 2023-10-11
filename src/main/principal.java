@@ -21,6 +21,7 @@ public class principal extends javax.swing.JFrame {
     private LineaNum numlinea;
     private SistemaArch archivo;
     Lexer lexico;
+    TablaSimbolos tablaSimbolos;
     public boolean band = true;
     public Stack<String> pilaPrincipal = new Stack();
     public ArrayList<String> simbolosTerm = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char",
@@ -83,52 +84,67 @@ public class principal extends javax.swing.JFrame {
     private void procesoComp(){
         AnalisisLexico();
     }
+    
+    private void RegistroTablaSimb(String valor){
+        if(valor.equals("id")){
+            String nombreSimbolo = lexico.lexema;
+            InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoSimbolo, valorSimbolo, lexico.posLinea+1, columnaSimbolo);
+            // Agregar el símbolo a la tabla de símbolos
+            tablaSimbolos.agregarSimbolo(nombreSimbolo, infoSimbolo);
+        }
+
+    }
 
     private void AnalisisLexico() {
-        try {
-            File codigo = new File("archivo.txt");
-            FileOutputStream output = new FileOutputStream(codigo);
+        File codigo = new File("archivo.txt");
+        try (FileOutputStream output = new FileOutputStream(codigo);
+            BufferedReader entrada = new BufferedReader(new InputStreamReader(new FileInputStream(codigo), "UTF-8"))) {
             byte[] bytes = txtCodigoBase.getText().getBytes();
             output.write(bytes);
-            BufferedReader entrada = new BufferedReader(new InputStreamReader(new FileInputStream(codigo), "UTF-8"));
+
             lexico = new Lexer(entrada);
-            String  lexRec = "";
+            String lexRec = "";
             String errorLex = "";
-            while (!lexico.yyatEOF() && band == true) {
+
+            while (!lexico.yyatEOF() && band) {
                 Tokens token = lexico.yylex();
+                int lineaActual = lexico.posLinea + 1;
+
                 if (token == null) {
-                    AnalisisSintactico("$", (lexico.posLinea + 1));
+                    AnalisisSintactico("$", lineaActual);
                     lexRec += "Análisis léxico finalizado";
                     txtLexico.setText(lexRec);
                     return;
                 }
+
                 switch (token) {
                     case Error -> {
-                        errorLex += "Error lexico en la linea " + (lexico.posLinea + 1) + " debido a la deteccion de un simbolo inapropiado: " + lexico.lexema + "\n";
-                        lexRec += "Error lexico en la linea " + (lexico.posLinea + 1) + " debido a la deteccion deteccion de un simbolo inapropiado: " + lexico.lexema + "\n";
+                        lexRec += "Error léxico en la línea " + lineaActual +
+                                " debido a la detección de un símbolo inapropiado: " + lexico.lexema + "\n";
+                        errorLex += "Error léxico en la línea " + lineaActual +
+                                " debido a la detección de un símbolo inapropiado: " + lexico.lexema +
+                                "\nCOMPILACIÓN INTERRUMPIDA DEBIDO AL ERROR LÉXICO DETECTADO";
                         txtLexico.setText(lexRec);
                         txtAreaTerminal.setText(errorLex);
-                        //band = false;
-                        //return;
+                        band = false;
+                        return;
                     }
                     default -> {
-                        if (token.getValor()== null) {
-                            lexRec += token + "\n";
-                            AnalisisSintactico(token + "", (lexico.posLinea + 1));
-                            txtLexico.setText(lexRec);
-                        } else {
-                            lexRec += token.getValor()+ "\n";
-                            AnalisisSintactico(token.getValor(), (lexico.posLinea + 1));
-                            txtLexico.setText(lexRec);
-                        }
+                        String valorToken = (token.getValor() == null) ? token.toString() : token.getValor();
+                        lexRec += valorToken + "\n";
+                        RegistroTablaSimb(valorToken);
+                        AnalisisSintactico(valorToken, lineaActual);
+                        txtLexico.setText(lexRec);
                     }
-                }                            }
+                }
+            }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(principal.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        }catch (IOException ex) {
             Logger.getLogger(principal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 
     private void AnalisisSintactico(String token, int nlinea) {
         String elementoPilaP, accionTabla, errorSint = "", prod, prodRedux;
@@ -153,7 +169,7 @@ public class principal extends javax.swing.JFrame {
             if (accionTabla.equals("err")) {
                 txtSintactico.append(pilaPrincipal + "\t Se genera un error \n");
                 pilaPrincipal.pop();
-                errorSint += "Error sintactico en la linea " + (nlinea) + " se esperaba: " + TipoErrorSint(pilaPrincipal.peek()) + "\n"
+                errorSint += "Error sintactico en la linea " + (nlinea) + " debido a que: " + TipoErrorSint(pilaPrincipal.peek()) + "\n"
                         + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SINTACTICO DETECTADO" + "\n";
                 txtSintactico.append(errorSint);
                 txtAreaTerminal.append(errorSint);
@@ -181,44 +197,68 @@ public class principal extends javax.swing.JFrame {
     }
     
     private String TipoErrorSint(String objPila){
-        String error = "";
+        String error = "", elem;
         if(simbolosTerm.contains(objPila)){
             switch (objPila) {
-                case "id":
-                case "num":
-                case "int":
-                case "float":
-                case "char":
-                case ",":
-                case ";":
-                case "+":
-                case "-":
-                case "*":
-                case "/":
-                case "=":
-                case "(":
-                case ")":
-                    return error = "AS";
+                case "id" -> {
+                    elem = pilaPrincipal.get(pilaPrincipal.size() - 3);
+                    switch (elem) {
+                        case "int", "float", "char", "Tipo", "," -> {
+                            return "Se esperaba el simbolo de , o ;";
+                        }
+                        case ";", "$" -> {
+                            return "Se esperaba el simbolo de =";
+                        }
+                        default -> {
+                            return "Se esperaba alguno de los \nsiguientes simbolos: +, -, /, *, ;";
+                        }
+                    }
+                }
+                case "num", ")" -> {
+                    return "Se esperaba alguno de los \nsiguientes simbolos: +, -, /, *, ;";
+                }
+                case "int", "float", "char", ","-> {
+                    return "Se esperaba un identificador";
+                }
+                case ";"-> {
+                    return "Se esperaba un identificador o declaracion de tipo";
+                }
+                case "+", "-", "*", "/", "=", "(" -> {
+                    return "Se esperaba un identificador, numero o (";
+                }
             }
-            
         }else{
             switch (objPila){
-                case "$":
-                case "P":
-                    return error = "Una definicion o identificador";
-                case "Tipo":
-                    return error = "Una definicion de entero, flotante o caracter";
-                case "V":
-                    return error = "Una , o ;";
-                case "A":
-                    return error = "Una asignacion de identificador";
-                case "S":
-                case "E":
-                case "T":
-                case "F":
-                    return error = "Una definicion o asignacion";
+                case "$", "P" -> {
+                    return "Se esperaba una definicion de tipo de dato o identificador";
+                }
+                case "Tipo" -> {
+                    return "Se esperaba algun tipo de asignacion como entero, flotante o caracter";
+                }
+                case "V" -> {
+                    return "Se esperaba un simbolo de , o ;";
+                }
+                case "A" -> {
+                    return "Se esperaba la asignacion de un identificador";
+                }
+                case "S" -> {
+                    return "Se esperaba un numero, identificador u operador (+,-)";
+                }
+                case "E" -> {
+                    elem = pilaPrincipal.get(pilaPrincipal.size() - 3);
+                    if(elem.equals("("))
+                        return "El simbolo de ), ya que se detecto \nla apertura de un parentesis, pero no su cierre";
+                    else{
+                        return "Se detecto el cierre de un parentesis \npero nunca se dio su apertura (";
+                    }
+                }
+                case "T" -> {
+                    return "Algun identificador, numero o signo de operador (/, *)";
+                }
+                case "F" -> {
+                    return "Un identificador, numero o (";
+                }
             }
-            return error;
         }
         return error;
     }

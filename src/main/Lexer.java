@@ -5,48 +5,6 @@
 
 package main;
 import static main.Tokens.*;
-import java.util.Map;
-import java.util.LinkedHashMap;
-
-class Token {
-    public String tok, lex;
-    public int numLinea;
-
-    public Token(String lex, String tok, int numLinea) {
-        this.lex = lex;
-        this.tok = tok;
-        this.numLinea = numLinea;
-    }
-
-    public String getToken() {
-        return tok;
-    }
-
-    public void setToken(String tok) {
-        this.tok = tok;
-    }
-
-    public String getLexema() {
-        return lex;
-    }
-
-    public void setLexema(String lex) {
-        this.lex = lex;
-    }
-
-    public int getnumLinea() {
-        return numLinea;
-    }
-
-    public void setnumLinea(int numLinea) {
-        this.numLinea = numLinea;
-    }
-    
-    @Override
-    public String toString() {
-        return super.toString(); 
-    }
-}
 
 
 @SuppressWarnings("fallthrough")
@@ -351,7 +309,6 @@ class Lexer {
   private boolean zzEOFDone;
 
   /* user code: */
-   Map<String,Token> tablaSimbolos = new LinkedHashMap<>();
    public int posLinea;
    public String lexema;
 
@@ -777,77 +734,77 @@ class Lexer {
           // fall through
           case 19: break;
           case 3:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"id",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return id;
+            { posLinea=yyline; lexema=yytext(); return id;
             }
           // fall through
           case 20: break;
           case 4:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"(",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return ParentesisAbre;
+            { posLinea=yyline; lexema=yytext(); return ParentesisAbre;
             }
           // fall through
           case 21: break;
           case 5:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),")",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return ParentesisCierra;
+            { posLinea=yyline; lexema=yytext(); return ParentesisCierra;
             }
           // fall through
           case 22: break;
           case 6:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"*",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return Producto;
+            { posLinea=yyline; lexema=yytext(); return Producto;
             }
           // fall through
           case 23: break;
           case 7:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"+",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return Suma;
+            { posLinea=yyline; lexema=yytext(); return Suma;
             }
           // fall through
           case 24: break;
           case 8:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),",",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return Coma;
+            { posLinea=yyline; lexema=yytext(); return Coma;
             }
           // fall through
           case 25: break;
           case 9:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"-",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return Resta;
+            { posLinea=yyline; lexema=yytext(); return Resta;
             }
           // fall through
           case 26: break;
           case 10:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"/",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return Division;
+            { posLinea=yyline; lexema=yytext(); return Division;
             }
           // fall through
           case 27: break;
           case 11:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"num",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return num;
+            { posLinea=yyline; lexema=yytext(); return num;
             }
           // fall through
           case 28: break;
           case 12:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),";",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return PuntoComa;
+            { posLinea=yyline; lexema=yytext(); return PuntoComa;
             }
           // fall through
           case 29: break;
           case 13:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"=",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return Igual;
+            { posLinea=yyline; lexema=yytext(); return Igual;
             }
           // fall through
           case 30: break;
           case 14:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"car",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return car;
+            { posLinea=yyline; lexema=yytext(); return car;
             }
           // fall through
           case 31: break;
           case 15:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"int",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return entero;
+            { posLinea=yyline; lexema=yytext(); return entero;
             }
           // fall through
           case 32: break;
           case 16:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"char",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return caracter;
+            { posLinea=yyline; lexema=yytext(); return caracter;
             }
           // fall through
           case 33: break;
           case 17:
-            { posLinea=yyline; lexema=yytext(); Token t = new Token(yytext(),"float",yyline); tablaSimbolos.put(yytext()+yyline+yycolumn,t); return flotante;
+            { posLinea=yyline; lexema=yytext(); return flotante;
             }
           // fall through
           case 34: break;

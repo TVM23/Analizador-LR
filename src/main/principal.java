@@ -88,9 +88,9 @@ public class principal extends javax.swing.JFrame {
     private void RegistroTablaSimb(String valor){
         if(valor.equals("id")){
             String nombreSimbolo = lexico.lexema;
-            InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoSimbolo, valorSimbolo, lexico.posLinea+1, columnaSimbolo);
+            //InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoSimbolo, valorSimbolo, lexico.posLinea+1, columnaSimbolo);
             // Agregar el símbolo a la tabla de símbolos
-            tablaSimbolos.agregarSimbolo(nombreSimbolo, infoSimbolo);
+            //tablaSimbolos.agregarSimbolo(nombreSimbolo, infoSimbolo);
         }
 
     }
@@ -169,7 +169,7 @@ public class principal extends javax.swing.JFrame {
             if (accionTabla.equals("err")) {
                 txtSintactico.append(pilaPrincipal + "\t Se genera un error \n");
                 pilaPrincipal.pop();
-                errorSint += "Error sintactico en la linea " + (nlinea) + " debido a que: " + TipoErrorSint(pilaPrincipal.peek()) + "\n"
+                errorSint += "Error sintactico en la linea " + (nlinea) + " debido a que " + TipoErrorSint(pilaPrincipal.peek()) + "\n"
                         + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SINTACTICO DETECTADO" + "\n";
                 txtSintactico.append(errorSint);
                 txtAreaTerminal.append(errorSint);
@@ -207,56 +207,56 @@ public class principal extends javax.swing.JFrame {
                             return "Se esperaba el simbolo de , o ;";
                         }
                         case ";", "$" -> {
-                            return "Se esperaba el simbolo de =";
+                            return "se esperaba el simbolo de =";
                         }
                         default -> {
-                            return "Se esperaba alguno de los \nsiguientes simbolos: +, -, /, *, ;";
+                            return "se esperaba alguno de los \nsiguientes simbolos: +, -, /, *, ;";
                         }
                     }
                 }
                 case "num", ")" -> {
-                    return "Se esperaba alguno de los \nsiguientes simbolos: +, -, /, *, ;";
+                    return "se esperaba alguno de los \nsiguientes simbolos: +, -, /, *, ;";
                 }
                 case "int", "float", "char", ","-> {
-                    return "Se esperaba un identificador";
+                    return "se esperaba un identificador";
                 }
                 case ";"-> {
-                    return "Se esperaba un identificador o declaracion de tipo";
+                    return "se esperaba un identificador o declaracion de tipo";
                 }
                 case "+", "-", "*", "/", "=", "(" -> {
-                    return "Se esperaba un identificador, numero o (";
+                    return "se esperaba un identificador, numero o (";
                 }
             }
         }else{
             switch (objPila){
                 case "$", "P" -> {
-                    return "Se esperaba una definicion de tipo de dato o identificador";
+                    return "se esperaba una definicion de tipo de dato o identificador";
                 }
                 case "Tipo" -> {
-                    return "Se esperaba algun tipo de asignacion como entero, flotante o caracter";
+                    return "se esperaba algun tipo de asignacion como entero, flotante o caracter";
                 }
                 case "V" -> {
                     return "Se esperaba un simbolo de , o ;";
                 }
                 case "A" -> {
-                    return "Se esperaba la asignacion de un identificador";
+                    return "se esperaba la asignacion de un identificador";
                 }
                 case "S" -> {
-                    return "Se esperaba un numero, identificador u operador (+,-)";
+                    return "se esperaba un numero, identificador u operador (+,-)";
                 }
                 case "E" -> {
                     elem = pilaPrincipal.get(pilaPrincipal.size() - 3);
                     if(elem.equals("("))
-                        return "El simbolo de ), ya que se detecto \nla apertura de un parentesis, pero no su cierre";
+                        return "el simbolo de ), ya que se detecto \nla apertura de un parentesis, pero no su cierre";
                     else{
-                        return "Se detecto el cierre de un parentesis \npero nunca se dio su apertura (";
+                        return "se detecto el cierre de un parentesis \npero nunca se dio su apertura (";
                     }
                 }
                 case "T" -> {
-                    return "Algun identificador, numero o signo de operador (/, *)";
+                    return "algun identificador, numero o signo de operador (/, *)";
                 }
                 case "F" -> {
-                    return "Un identificador, numero o (";
+                    return "un identificador, numero o (";
                 }
             }
         }
@@ -322,7 +322,7 @@ public class principal extends javax.swing.JFrame {
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel1.setBackground(new java.awt.Color(153, 204, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         txtCodigoBase.setColumns(20);
@@ -462,7 +462,6 @@ public class principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        txtLexico.setText("");
         archivo.Nuevo(this);
         Limpiar();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
@@ -476,13 +475,11 @@ public class principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        txtLexico.setText("");
         archivo.Abrir(this);
         Limpiar();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        txtLexico.setText("");
         archivo.guardarC(this);
         Limpiar();
     }//GEN-LAST:event_jMenuItem4ActionPerformed

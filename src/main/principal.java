@@ -147,54 +147,67 @@ public class principal extends javax.swing.JFrame {
 
 
     private void AnalisisSintactico(String token, int nlinea) {
-        String elementoPilaP, accionTabla, prod, prodRedux;
-        int numEstado, columnaTabla, nuevoEstado;
+        String elementoPilaP, accionTabla;
+        int numEstado, columnaTabla;
         while (true) {
             elementoPilaP = pilaPrincipal.peek();
             numEstado = Integer.parseInt(elementoPilaP.substring(1));
             columnaTabla = columnas.indexOf(token);
             accionTabla = tablaSint[numEstado][columnaTabla];
             if (accionTabla.equals("P0")) {
-                String fin ="COMPILACION FINALIZADA CON EXITO";
-                String sintFin = "Analisis Sintactico Finalizado";
-                txtSintactico.append(pilaPrincipal +  "\t Se genera " + accionTabla + ". Se acepta la cadena \n");
-                txtSintactico.append(sintFin);
-                txtAreaTerminal.append(fin);
+                ProduccionCero(accionTabla);
                 return;
             }
             if (accionTabla.equals("err")) {
-                txtSintactico.append(pilaPrincipal + "\t Se genera un error \n");
-                //pilaPrincipal.pop();
-                String errorSint = "Error sintactico en la linea " + (nlinea) 
-                        + SimbEsperado(token, numEstado) + "\n"
-                        + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SINTACTICO DETECTADO" + "\n";
-                txtSintactico.append(errorSint);
-                txtAreaTerminal.append(errorSint);
-                band = false;
+                ErrorSint(nlinea, numEstado, token);
                 return;
             }
             if (accionTabla.substring(0, 1).equals("I")) {
-                txtSintactico.append(pilaPrincipal + "\t Desplaza "+token+" a "+accionTabla+"\n");
-                pilaPrincipal.push(token);
-                pilaPrincipal.push(accionTabla);
+                EstadoI(accionTabla, token);
                 return;
             } else {
-                prod = produccionesP[Integer.parseInt(accionTabla.substring(1))][0];
-                prodRedux = produccionesP[Integer.parseInt(accionTabla.substring(1))][1];
-                String pr[] = prodRedux.split(" ");
-                txtSintactico.append(pilaPrincipal + "\t Se  genera "+accionTabla+" "+prod+"->"+prodRedux+"\n");
-                for(int i = 0; i<pr.length*2; i++) {
-                    pilaPrincipal.pop();
-                }
-                nuevoEstado = Integer.parseInt(pilaPrincipal.peek().substring(1));
-                pilaPrincipal.push(prod);
-                pilaPrincipal.push(tablaSint[nuevoEstado][columnas.indexOf(prod)]);
+                EstadoProd(accionTabla);
             }
         }
     }
     
-    private void ErrorSint(){
-        
+    private void EstadoI(String accionTabla, String token){
+        txtSintactico.append(pilaPrincipal + "\t Desplaza "+token+" a "+accionTabla+"\n");
+        pilaPrincipal.push(token);
+        pilaPrincipal.push(accionTabla);
+    }
+    
+    private void EstadoProd(String accionTabla){
+        String prod, prodRedux;
+        int nuevoEstado;
+        prod = produccionesP[Integer.parseInt(accionTabla.substring(1))][0];
+        prodRedux = produccionesP[Integer.parseInt(accionTabla.substring(1))][1];
+        String pr[] = prodRedux.split(" ");
+        txtSintactico.append(pilaPrincipal + "\t Se  genera "+accionTabla+" "+prod+"->"+prodRedux+"\n");
+        for(int i = 0; i<pr.length*2; i++) {
+            pilaPrincipal.pop();
+        }
+        nuevoEstado = Integer.parseInt(pilaPrincipal.peek().substring(1));
+        pilaPrincipal.push(prod);
+        pilaPrincipal.push(tablaSint[nuevoEstado][columnas.indexOf(prod)]);
+    }
+    
+    private void ProduccionCero(String accionTabla){
+        String fin ="COMPILACION FINALIZADA CON EXITO";
+        String sintFin = "Analisis Sintactico Finalizado";
+        txtSintactico.append(pilaPrincipal +  "\t Se genera " + accionTabla + ". Se acepta la cadena \n");
+        txtSintactico.append(sintFin);
+        txtAreaTerminal.append(fin);
+    }
+    
+    private void ErrorSint(int nlinea, int numEstado, String token){
+        txtSintactico.append(pilaPrincipal + "\t Se genera un error \n");
+        String errorSint = "Error sintactico en la linea " + (nlinea) 
+        + SimbEsperado(token, numEstado) + "\n"
+        + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SINTACTICO DETECTADO" + "\n";
+        txtSintactico.append(errorSint);
+        txtAreaTerminal.append(errorSint);
+        band = false;
     }
     
     private String SimbEsperado(String tok, int numEstado){

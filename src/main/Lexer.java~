@@ -308,6 +308,10 @@ class Lexer {
   @SuppressWarnings("unused")
   private boolean zzEOFDone;
 
+  /* user code: */
+   public int posLinea;
+   public String lexema;
+
 
   /**
    * Creates a new scanner
@@ -730,77 +734,77 @@ class Lexer {
           // fall through
           case 19: break;
           case 3:
-            { posLinea=yyline; lexema=yytext(); return id;
+            { lexema=yytext(); posLinea=yyline; return id;
             }
           // fall through
           case 20: break;
           case 4:
-            { posLinea=yyline; lexema=yytext(); return ParentesisAbre;
+            { lexema=yytext(); posLinea=yyline; return ParentesisAbre;
             }
           // fall through
           case 21: break;
           case 5:
-            { posLinea=yyline; lexema=yytext(); return ParentesisCierra;
+            { lexema=yytext(); posLinea=yyline; return ParentesisCierra;
             }
           // fall through
           case 22: break;
           case 6:
-            { posLinea=yyline; lexema=yytext(); return Producto;
+            { lexema=yytext(); posLinea=yyline; return Producto;
             }
           // fall through
           case 23: break;
           case 7:
-            { posLinea=yyline; lexema=yytext(); return Suma;
+            { lexema=yytext(); posLinea=yyline; return Suma;
             }
           // fall through
           case 24: break;
           case 8:
-            { posLinea=yyline; return Coma;
+            { lexema=yytext(); posLinea=yyline; return Coma;
             }
           // fall through
           case 25: break;
           case 9:
-            { posLinea=yyline; lexema=yytext(); return Resta;
+            { lexema=yytext(); posLinea=yyline; return Resta;
             }
           // fall through
           case 26: break;
           case 10:
-            { posLinea=yyline; lexema=yytext(); return Division;
+            { lexema=yytext(); posLinea=yyline; return Division;
             }
           // fall through
           case 27: break;
           case 11:
-            { posLinea=yyline; lexema=yytext(); return num;
+            { lexema=yytext(); posLinea=yyline; return num;
             }
           // fall through
           case 28: break;
           case 12:
-            { posLinea=yyline; lexema=yytext(); return PuntoComa;
+            { lexema=yytext(); posLinea=yyline; return PuntoComa;
             }
           // fall through
           case 29: break;
           case 13:
-            { posLinea=yyline; lexema=yytext(); return Igual;
+            { lexema=yytext(); posLinea=yyline; return Igual;
             }
           // fall through
           case 30: break;
           case 14:
-            { posLinea=yyline; lexema=yytext(); return car;
+            { lexema=yytext(); posLinea=yyline; return car;
             }
           // fall through
           case 31: break;
           case 15:
-            { posLinea=yyline; lexema=yytext(); return entero;
+            { lexema=yytext(); posLinea=yyline; return entero;
             }
           // fall through
           case 32: break;
           case 16:
-            { posLinea=yyline; lexema=yytext(); return caracter;
+            { lexema=yytext(); posLinea=yyline; return caracter;
             }
           // fall through
           case 33: break;
           case 17:
-            { posLinea=yyline; lexema=yytext(); return flotante;
+            { lexema=yytext(); posLinea=yyline; return flotante;
             }
           // fall through
           case 34: break;

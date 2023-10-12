@@ -153,15 +153,10 @@ public class principal extends javax.swing.JFrame {
             elementoPilaP = pilaPrincipal.peek();
             numEstado = Integer.parseInt(elementoPilaP.substring(1));
             columnaTabla = columnas.indexOf(token);
-            System.out.println(token);
             accionTabla = tablaSint[numEstado][columnaTabla];
             if (accionTabla.equals("P0")) {
-                String fin ="""
-                            COMPILACION FINALIZADA CON EXITO
-                            """;
-                String sintFin = """
-                                 Analisis Sintactico Finalizado
-                                 """;
+                String fin ="COMPILACION FINALIZADA CON EXITO";
+                String sintFin = "Analisis Sintactico Finalizado";
                 txtSintactico.append(pilaPrincipal +  "\t Se genera " + accionTabla + ". Se acepta la cadena \n");
                 txtSintactico.append(sintFin);
                 txtAreaTerminal.append(fin);

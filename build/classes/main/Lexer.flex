@@ -26,35 +26,29 @@ num = {entero} | {flotante}
 id = {letra}({letra}|{digito})*
 %%
 
-{espacioVacio} { /* Saltar */ }
+{espacioVacio}
 
-/* tipo de valor para asignacion */
-"int" {posLinea=yyline; lexema=yytext(); return entero;}
-"float" {posLinea=yyline; lexema=yytext(); return flotante;}
-"char" {posLinea=yyline; lexema=yytext(); return caracter;}
+"int" {lexema=yytext(); posLinea=yyline; return entero;}
+"float" {lexema=yytext(); posLinea=yyline; return flotante;}
+"char" {lexema=yytext(); posLinea=yyline; return caracter;}
 
-/* Identificador */
-{id} {posLinea=yyline; lexema=yytext(); return id;}
+{id} {lexema=yytext(); posLinea=yyline; return id;}
 
-/* Literal caracter */
-{caracter} {posLinea=yyline; lexema=yytext(); return car;}
+{caracter} {lexema=yytext(); posLinea=yyline; return car;}
 
-/* num */
-{num} {posLinea=yyline; lexema=yytext(); return num;}
+{num} {lexema=yytext(); posLinea=yyline; return num;}
 
 /* Simbolos de puntuación o comas */
-"," {posLinea=yyline; lexema=yytext(); return Coma;}
-";" {posLinea=yyline; lexema=yytext(); return PuntoComa;}
+"," {lexema=yytext(); posLinea=yyline; return Coma;}
+";" {lexema=yytext(); posLinea=yyline; return PuntoComa;}
 
-/* Parentesis */
-"(" {posLinea=yyline; lexema=yytext(); return ParentesisAbre;}
-")" {posLinea=yyline; lexema=yytext(); return ParentesisCierra;}
+"(" {lexema=yytext(); posLinea=yyline; return ParentesisAbre;}
+")" {lexema=yytext(); posLinea=yyline; return ParentesisCierra;}
 
-/* Simbolos */
-"=" {posLinea=yyline; lexema=yytext(); return Igual;}
-"*" {posLinea=yyline; lexema=yytext(); return Producto;}
-"/" {posLinea=yyline; lexema=yytext(); return Division;}
-"+" {posLinea=yyline; lexema=yytext(); return Suma;}
-"-" {posLinea=yyline; lexema=yytext(); return Resta;}
+"=" {lexema=yytext(); posLinea=yyline; return Igual;}
+"*" {lexema=yytext(); posLinea=yyline; return Producto;}
+"/" {lexema=yytext(); posLinea=yyline; return Division;}
+"+" {lexema=yytext(); posLinea=yyline; return Suma;}
+"-" {lexema=yytext(); posLinea=yyline; return Resta;}
 
  . {posLinea=yyline; lexema=yytext(); return Error;}

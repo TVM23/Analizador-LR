@@ -25,7 +25,7 @@ public class principal extends javax.swing.JFrame {
     public boolean band = true;
     public Stack<String> pilaPrincipal = new Stack();
     public ArrayList<String> simbolosTerm = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char",
-            ",", ";", "+", "-", "*", "/", "=", "(", ")")); //Simbolos terminales o tokens
+            ",", ";", "+", "-", "*", "/", "=", "(", ")", "$")); //Simbolos terminales o tokens
     public ArrayList<String> columnas = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char",
             ",", ";", "+", "-", "*", "/", "=", "(", ")", "$", "P", "Tipo",
             "V", "A", "S", "E", "T", "F")); //Columnas de la tabla sintactica
@@ -153,6 +153,7 @@ public class principal extends javax.swing.JFrame {
             elementoPilaP = pilaPrincipal.peek();
             numEstado = Integer.parseInt(elementoPilaP.substring(1));
             columnaTabla = columnas.indexOf(token);
+            System.out.println(token);
             accionTabla = tablaSint[numEstado][columnaTabla];
             if (accionTabla.equals("P0")) {
                 String fin ="""
@@ -168,8 +169,9 @@ public class principal extends javax.swing.JFrame {
             }
             if (accionTabla.equals("err")) {
                 txtSintactico.append(pilaPrincipal + "\t Se genera un error \n");
-                pilaPrincipal.pop();
-                errorSint += "Error sintactico en la linea " + (nlinea) + " debido a que " + TipoErrorSint(pilaPrincipal.peek()) + "\n"
+                //pilaPrincipal.pop();
+                errorSint += "Error sintactico en la linea " + (nlinea) 
+                        + SimbEsperado(token, numEstado) + "\n"
                         + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SINTACTICO DETECTADO" + "\n";
                 txtSintactico.append(errorSint);
                 txtAreaTerminal.append(errorSint);
@@ -196,68 +198,15 @@ public class principal extends javax.swing.JFrame {
         }
     }
     
-    private String TipoErrorSint(String objPila){
-        String error = "", elem;
-        if(simbolosTerm.contains(objPila)){
-            switch (objPila) {
-                case "id" -> {
-                    elem = pilaPrincipal.get(pilaPrincipal.size() - 3);
-                    switch (elem) {
-                        case "int", "float", "char", "Tipo", "," -> {
-                            return "Se esperaba el simbolo de , o ;";
-                        }
-                        case ";", "$" -> {
-                            return "se esperaba el simbolo de =";
-                        }
-                        default -> {
-                            return "se esperaba alguno de los \nsiguientes simbolos: +, -, /, *, ;";
-                        }
-                    }
-                }
-                case "num", ")" -> {
-                    return "se esperaba alguno de los \nsiguientes simbolos: +, -, /, *, ;";
-                }
-                case "int", "float", "char", ","-> {
-                    return "se esperaba un identificador";
-                }
-                case ";"-> {
-                    return "se esperaba un identificador o declaracion de tipo";
-                }
-                case "+", "-", "*", "/", "=", "(" -> {
-                    return "se esperaba un identificador, numero o (";
-                }
-            }
-        }else{
-            switch (objPila){
-                case "$", "P" -> {
-                    return "se esperaba una definicion de tipo de dato o identificador";
-                }
-                case "Tipo" -> {
-                    return "se esperaba algun tipo de asignacion como entero, flotante o caracter";
-                }
-                case "V" -> {
-                    return "Se esperaba un simbolo de , o ;";
-                }
-                case "A" -> {
-                    return "se esperaba la asignacion de un identificador";
-                }
-                case "S" -> {
-                    return "se esperaba un numero, identificador u operador (+,-)";
-                }
-                case "E" -> {
-                    elem = pilaPrincipal.get(pilaPrincipal.size() - 3);
-                    if(elem.equals("("))
-                        return "el simbolo de ), ya que se detecto \nla apertura de un parentesis, pero no su cierre";
-                    else{
-                        return "se detecto el cierre de un parentesis \npero nunca se dio su apertura (";
-                    }
-                }
-                case "T" -> {
-                    return "algun identificador, numero o signo de operador (/, *)";
-                }
-                case "F" -> {
-                    return "un identificador, numero o (";
-                }
+    private String SimbEsperado(String tok, int numEstado){
+        String error;
+        if(tok.equals("$"))
+            error = " se acabo la cadena de texto pero aun se esperaba: ";
+        else
+            error = " se recibio "+ tok +" y se esperaba: ";
+        for(int i=0; i<15; i++){
+            if(!tablaSint[numEstado][i].equals("err")){
+                error += simbolosTerm.get(i)+", ";
             }
         }
         return error;
@@ -322,7 +271,7 @@ public class principal extends javax.swing.JFrame {
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(153, 204, 255));
+        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         txtCodigoBase.setColumns(20);

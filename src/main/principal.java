@@ -147,7 +147,7 @@ public class principal extends javax.swing.JFrame {
 
 
     private void AnalisisSintactico(String token, int nlinea) {
-        String elementoPilaP, accionTabla, errorSint = "", prod, prodRedux;
+        String elementoPilaP, accionTabla, prod, prodRedux;
         int numEstado, columnaTabla, nuevoEstado;
         while (true) {
             elementoPilaP = pilaPrincipal.peek();
@@ -165,7 +165,7 @@ public class principal extends javax.swing.JFrame {
             if (accionTabla.equals("err")) {
                 txtSintactico.append(pilaPrincipal + "\t Se genera un error \n");
                 //pilaPrincipal.pop();
-                errorSint += "Error sintactico en la linea " + (nlinea) 
+                String errorSint = "Error sintactico en la linea " + (nlinea) 
                         + SimbEsperado(token, numEstado) + "\n"
                         + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SINTACTICO DETECTADO" + "\n";
                 txtSintactico.append(errorSint);
@@ -191,6 +191,10 @@ public class principal extends javax.swing.JFrame {
                 pilaPrincipal.push(tablaSint[nuevoEstado][columnas.indexOf(prod)]);
             }
         }
+    }
+    
+    private void ErrorSint(){
+        
     }
     
     private String SimbEsperado(String tok, int numEstado){

@@ -26,7 +26,7 @@ num = {entero} | {flotante}
 id = {letra}({letra}|{digito})*
 %%
 
-{espacioVacio}
+{espacioVacio} { /* Saltar */ }
 
 "int" {lexema=yytext(); posLinea=yyline; return entero;}
 "float" {lexema=yytext(); posLinea=yyline; return flotante;}

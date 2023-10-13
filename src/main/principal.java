@@ -21,7 +21,6 @@ public class principal extends javax.swing.JFrame {
     private LineaNum numlinea;
     private SistemaArch archivo;
     Lexer lexico;
-    TablaSimbolos tablaSimbolos;
     public boolean band = true;
     public Stack<String> pilaPrincipal = new Stack();
     public ArrayList<String> simbolosTerm = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char",
@@ -84,16 +83,6 @@ public class principal extends javax.swing.JFrame {
     private void procesoComp(){
         AnalisisLexico();
     }
-    
-    private void RegistroTablaSimb(String valor){
-        if(valor.equals("id")){
-            String nombreSimbolo = lexico.lexema;
-            //InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoSimbolo, valorSimbolo, lexico.posLinea+1, columnaSimbolo);
-            // Agregar el símbolo a la tabla de símbolos
-            //tablaSimbolos.agregarSimbolo(nombreSimbolo, infoSimbolo);
-        }
-
-    }
 
     private void AnalisisLexico() {
         File codigo = new File("archivo.txt");
@@ -122,17 +111,16 @@ public class principal extends javax.swing.JFrame {
                         lexRec += "Error léxico en la línea " + lineaActual +
                                 " debido a la detección de un símbolo inapropiado: " + lexico.lexema + "\n";
                         errorLex += "Error léxico en la línea " + lineaActual +
-                                " debido a la detección de un símbolo inapropiado: " + lexico.lexema +
-                                "\nCOMPILACIÓN INTERRUMPIDA DEBIDO AL ERROR LÉXICO DETECTADO";
+                                " debido a la detección de un símbolo inapropiado: " + lexico.lexema + "\n";
                         txtLexico.setText(lexRec);
                         txtAreaTerminal.setText(errorLex);
-                        band = false;
-                        return;
+                        break;
+                        //band = false;
+                        //return;
                     }
                     default -> {
                         String valorToken = (token.getValor() == null) ? token.toString() : token.getValor();
                         lexRec += valorToken + "\n";
-                        RegistroTablaSimb(valorToken);
                         AnalisisSintactico(valorToken, lineaActual);
                         txtLexico.setText(lexRec);
                     }
@@ -283,7 +271,7 @@ public class principal extends javax.swing.JFrame {
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel1.setBackground(new java.awt.Color(222, 220, 220));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         txtCodigoBase.setColumns(20);

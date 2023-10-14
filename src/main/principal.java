@@ -111,12 +111,13 @@ public class principal extends javax.swing.JFrame {
                         lexRec += "Error léxico en la línea " + lineaActual +
                                 " debido a la detección de un símbolo inapropiado: " + lexico.lexema + "\n";
                         errorLex += "Error léxico en la línea " + lineaActual +
-                                " debido a la detección de un símbolo inapropiado: " + lexico.lexema + "\n";
+                                " debido a la detección de un símbolo inapropiado: " + lexico.lexema +
+                                "\nCOMPILACIÓN INTERRUMPIDA DEBIDO AL ERROR LÉXICO DETECTADO";
                         txtLexico.setText(lexRec);
                         txtAreaTerminal.setText(errorLex);
-                        break;
-                        //band = false;
-                        //return;
+                        //break;
+                        band = false;
+                        return;
                     }
                     default -> {
                         String valorToken = (token.getValor() == null) ? token.toString() : token.getValor();

@@ -17,11 +17,13 @@ import java.util.Stack;
 import static main.Tokens.Error;
 
 public class principal extends javax.swing.JFrame {
-
+    
+    private int tipoValor;
     private LineaNum numlinea;
     private SistemaArch archivo;
     Lexer lexico;
-    public boolean band = true;
+    TablaSimbolos tablaSimbolos;
+    public boolean band = true, siRegistra, chkv;
     public Stack<String> pilaPrincipal = new Stack();
     public ArrayList<String> simbolosTerm = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char",
             ",", ";", "+", "-", "*", "/", "=", "(", ")", "$")); //Simbolos terminales o tokens
@@ -83,8 +85,51 @@ public class principal extends javax.swing.JFrame {
     private void procesoComp(){
         AnalisisLexico();
     }
+        
+    private void RegistroTablaSimb(String valor){
+        ChecarSiRegistra(valor);
+        String nombreSimbolo = lexico.lexema;
+        InfoSimbolo info;
+        if(valor.equals("id") && siRegistra==true){ //Este if es para ver si se registra el id
+            System.out.println(nombreSimbolo);
+            //InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoSimbolo, valorSimbolo, lexico.posLinea+1);
+            InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoValor, null, lexico.posLinea+1);
+            tablaSimbolos.agregarSimbolo(nombreSimbolo, infoSimbolo);
+        }else if(valor.equals("id") && siRegistra==false){ //este if es para ver si estamos declarando
+            if(tablaSimbolos.contieneSimbolo(nombreSimbolo)){ //Este if sirve checar si un id si se declaro
+                info = tablaSimbolos.obtenerSimbolo(nombreSimbolo);
+                System.out.println(info.getTipo());
+            }else{
+                String errorID = "Error detectado: La variable \""+nombreSimbolo+"\" no se declaro" + "\n"
+                + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR DE IDENTIFICADOR DETECTADO" + "\n";
+                txtSemantico.append(errorID);
+                txtAreaTerminal.append(errorID);
+                band = false;
+            }
+        }
+    }
+    
+    private void ChecarSiRegistra(String valor){
+        if(valor.equals(";")){
+            siRegistra = false;
+        }else if(valor.equals("int")||valor.equals("float")||valor.equals("char")){
+            siRegistra = true;
+            switch (valor) {
+                case "int":
+                    tipoValor = 0;
+                    break;
+                case "float":
+                    tipoValor = 1;
+                    break;
+                case "char":
+                    tipoValor = 2;
+                    break;
+            }
+        }
+    }
 
     private void AnalisisLexico() {
+        tablaSimbolos = new TablaSimbolos();
         File codigo = new File("archivo.txt");
         try (FileOutputStream output = new FileOutputStream(codigo);
             BufferedReader entrada = new BufferedReader(new InputStreamReader(new FileInputStream(codigo), "UTF-8"))) {
@@ -137,18 +182,19 @@ public class principal extends javax.swing.JFrame {
 
     private void AnalisisSintactico(String token, int nlinea) {
         String elementoPilaP, accionTabla;
+        RegistroTablaSimb(token);
         int numEstado, columnaTabla;
         while (true) {
             elementoPilaP = pilaPrincipal.peek();
             numEstado = Integer.parseInt(elementoPilaP.substring(1));
             columnaTabla = columnas.indexOf(token);
             accionTabla = tablaSint[numEstado][columnaTabla];
-            if (accionTabla.equals("P0")) {
-                ProduccionCero(accionTabla);
-                return;
-            }
             if (accionTabla.equals("err")) {
                 ErrorSint(nlinea, numEstado, token);
+                return;
+            }
+            if (accionTabla.equals("P0")) {
+                ProduccionCero(accionTabla);
                 return;
             }
             if (accionTabla.substring(0, 1).equals("I")) {
@@ -204,7 +250,7 @@ public class principal extends javax.swing.JFrame {
         if(tok.equals("$"))
             error = " se acabo la cadena de texto pero aun se esperaba: ";
         else
-            error = " se recibio "+ tok +" y se esperaba: ";
+            error = " no se esperaba "+ tok +" y lo que se esperaba era: ";
         for(int i=0; i<15; i++){
             if(!tablaSint[numEstado][i].equals("err")){
                 error += simbolosTerm.get(i)+", ";
@@ -256,6 +302,9 @@ public class principal extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        txtSemantico = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -343,7 +392,7 @@ public class principal extends javax.swing.JFrame {
         txtSintactico.setRows(5);
         jScrollPane4.setViewportView(txtSintactico);
 
-        jPanel1.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 220, 506, 260));
+        jPanel1.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 210, 506, 120));
 
         txtAreaTerminal.setEditable(false);
         txtAreaTerminal.setColumns(20);
@@ -359,10 +408,20 @@ public class principal extends javax.swing.JFrame {
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 100, -1));
 
         jLabel3.setText("Análisis Sintáctico");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 200, 100, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 190, 100, -1));
 
         jLabel4.setText("Análisis Léxico");
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 50, 100, -1));
+
+        jLabel5.setText("Análisis Semántico");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 340, 150, -1));
+
+        txtSemantico.setEditable(false);
+        txtSemantico.setColumns(20);
+        txtSemantico.setRows(5);
+        jScrollPane5.setViewportView(txtSemantico);
+
+        jPanel1.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 360, 506, 120));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1120, 510));
 
@@ -468,6 +527,7 @@ public class principal extends javax.swing.JFrame {
         txtAreaTerminal.setText("");
         txtLexico.setText("");
         txtSintactico.setText("");
+        txtSemantico.setText("");
     }
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -521,6 +581,7 @@ public class principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
@@ -532,10 +593,12 @@ public class principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTextArea txtAreaTerminal;
     public javax.swing.JTextArea txtCodigoBase;
     private javax.swing.JTextArea txtLexico;
+    private javax.swing.JTextArea txtSemantico;
     private javax.swing.JTextArea txtSintactico;
     // End of variables declaration//GEN-END:variables
 }

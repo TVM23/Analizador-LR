@@ -23,8 +23,10 @@ public class principal extends javax.swing.JFrame {
     private SistemaArch archivo;
     Lexer lexico;
     TablaSimbolos tablaSimbolos;
-    public boolean band = true, siRegistra, chkv;
+    public boolean band = true, siRegistra;
     public Stack<String> pilaPrincipal = new Stack();
+    public Stack<String> pilaOperadores = new Stack();
+    public Stack<String> pilaSemantica = new Stack();
     public ArrayList<String> simbolosTerm = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char",
             ",", ";", "+", "-", "*", "/", "=", "(", ")", "$")); //Simbolos terminales o tokens
     public ArrayList<String> columnas = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char",
@@ -91,16 +93,17 @@ public class principal extends javax.swing.JFrame {
         String nombreSimbolo = lexico.lexema;
         InfoSimbolo info;
         if(valor.equals("id") && siRegistra==true){ //Este if es para ver si se registra el id
-            System.out.println(nombreSimbolo);
+            //System.out.println(nombreSimbolo);
             //InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoSimbolo, valorSimbolo, lexico.posLinea+1);
             InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoValor, null, lexico.posLinea+1);
             tablaSimbolos.agregarSimbolo(nombreSimbolo, infoSimbolo);
         }else if(valor.equals("id") && siRegistra==false){ //este if es para ver si estamos declarando
             if(tablaSimbolos.contieneSimbolo(nombreSimbolo)){ //Este if sirve checar si un id si se declaro
                 info = tablaSimbolos.obtenerSimbolo(nombreSimbolo);
-                System.out.println(info.getTipo());
+                //System.out.println(info.getTipo());
             }else{
-                String errorID = "Error detectado: La variable \""+nombreSimbolo+"\" no se declaro" + "\n"
+                String errorID = "Error detectado: La variable \""+nombreSimbolo+"\" en la linea "+ 
+                (lexico.posLinea+1) +" no se declaro" + "\n"
                 + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR DE IDENTIFICADOR DETECTADO" + "\n";
                 txtSemantico.append(errorID);
                 txtAreaTerminal.append(errorID);
@@ -167,6 +170,7 @@ public class principal extends javax.swing.JFrame {
                     default -> {
                         String valorToken = (token.getValor() == null) ? token.toString() : token.getValor();
                         lexRec += valorToken + "\n";
+                        RegistroTablaSimb(valorToken);
                         AnalisisSintactico(valorToken, lineaActual);
                         txtLexico.setText(lexRec);
                     }
@@ -182,31 +186,75 @@ public class principal extends javax.swing.JFrame {
 
     private void AnalisisSintactico(String token, int nlinea) {
         String elementoPilaP, accionTabla;
-        RegistroTablaSimb(token);
         int numEstado, columnaTabla;
-        while (true) {
-            elementoPilaP = pilaPrincipal.peek();
-            numEstado = Integer.parseInt(elementoPilaP.substring(1));
-            columnaTabla = columnas.indexOf(token);
-            accionTabla = tablaSint[numEstado][columnaTabla];
-            if (accionTabla.equals("err")) {
-                ErrorSint(nlinea, numEstado, token);
-                return;
-            }
-            if (accionTabla.equals("P0")) {
-                ProduccionCero(accionTabla);
-                return;
-            }
-            if (accionTabla.substring(0, 1).equals("I")) {
-                EstadoI(accionTabla, token);
-                return;
-            } else {
-                EstadoProd(accionTabla);
+        if(band==true){
+            while (true) {
+                elementoPilaP = pilaPrincipal.peek();
+                numEstado = Integer.parseInt(elementoPilaP.substring(1));
+                columnaTabla = columnas.indexOf(token);
+                accionTabla = tablaSint[numEstado][columnaTabla];
+                if (accionTabla.equals("err")) {
+                    ErrorSint(nlinea, numEstado, token);
+                    return;
+                }
+                if (accionTabla.equals("P0")) {
+                    ProduccionCero(accionTabla);
+                    return;
+                }
+                if (accionTabla.substring(0, 1).equals("I")) {
+                    EstadoI(accionTabla, token);
+                    return;
+                } else {
+                    EstadoProd(accionTabla);
+                }
             }
         }
     }
     
     private void EstadoI(String accionTabla, String token){
+        String simboloOp;
+        if(siRegistra==false){
+            switch(token){
+                case "id":
+                    InfoSimbolo data = tablaSimbolos.obtenerSimbolo(lexico.lexema);
+                    pilaSemantica.push(data.getTipo()+"");          
+                    System.out.println(pilaSemantica);
+                    break;
+                case "num":
+                    pilaSemantica.push("0"); //PRUEBA SUJETO A CAMBIOS OBVIOS
+                    System.out.println(pilaSemantica);
+                    break;
+                case "+":
+                case "-":
+                    if(pilaOperadores.isEmpty()){
+                        pilaOperadores.push(token);
+                        System.out.println(pilaOperadores);
+                    }else if(pilaOperadores.peek()!="("){
+                        simboloOp = pilaOperadores.pop();
+                        System.out.println(simboloOp);
+                    }else
+                        pilaOperadores.push(token);
+                        System.out.println(pilaOperadores);
+                    break;
+                case "*":
+                case "/":
+                    if(pilaOperadores.isEmpty()){
+                        pilaOperadores.push(token);
+                        System.out.println(pilaOperadores);
+                    }else if(pilaOperadores.peek()!="(" || pilaOperadores.peek()!="*" || pilaOperadores.peek()!="/"){
+                        simboloOp = pilaOperadores.pop();
+                        System.out.println(simboloOp);
+                    }else
+                        pilaOperadores.push(token);
+                        System.out.println(pilaOperadores);
+                    break;
+                case "(":
+                    pilaOperadores.push(token);
+                    break;
+                case ")":
+                    break;
+            }
+        }
         txtSintactico.append(pilaPrincipal + "\t Desplaza "+token+" a "+accionTabla+"\n");
         pilaPrincipal.push(token);
         pilaPrincipal.push(accionTabla);

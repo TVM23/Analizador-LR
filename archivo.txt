@@ -1,2 +1,2 @@
-int x, r, s; float s, e, d; char a, b, c;
-d = 40 + 4 - (e/2) * 3;
+int x;
+x = 2 + 2;

@@ -27,6 +27,16 @@ public class principal extends javax.swing.JFrame {
     public Stack<String> pilaPrincipal = new Stack();
     public Stack<String> pilaOperadores = new Stack();
     public Stack<String> pilaSemantica = new Stack();
+    public String resSemanticoA[][] = {
+        {"0","1","-1"},
+        {"1","1","-1"},
+        {"-1","-1","-1"}
+    };
+    public boolean permiteTipoSemantico[][] = {
+        {true,false,false},
+        {true,true,false},
+        {false,false,true}
+    };
     public ArrayList<String> simbolosTerm = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char",
             ",", ";", "+", "-", "*", "/", "=", "(", ")", "$")); //Simbolos terminales o tokens
     public ArrayList<String> columnas = new ArrayList<>(Arrays.asList("id", "num", "int", "float", "char",
@@ -170,7 +180,6 @@ public class principal extends javax.swing.JFrame {
                     default -> {
                         String valorToken = (token.getValor() == null) ? token.toString() : token.getValor();
                         lexRec += valorToken + "\n";
-                        RegistroTablaSimb(valorToken);
                         AnalisisSintactico(valorToken, lineaActual);
                         txtLexico.setText(lexRec);
                     }
@@ -187,6 +196,7 @@ public class principal extends javax.swing.JFrame {
     private void AnalisisSintactico(String token, int nlinea) {
         String elementoPilaP, accionTabla;
         int numEstado, columnaTabla;
+        RegistroTablaSimb(token);
         if(band==true){
             while (true) {
                 elementoPilaP = pilaPrincipal.peek();
@@ -212,48 +222,77 @@ public class principal extends javax.swing.JFrame {
     }
     
     private void EstadoI(String accionTabla, String token){
-        String simboloOp;
+        String simboloOp, nR;
+        int  n2, n1;
         if(siRegistra==false){
-            switch(token){
-                case "id":
-                    InfoSimbolo data = tablaSimbolos.obtenerSimbolo(lexico.lexema);
-                    pilaSemantica.push(data.getTipo()+"");          
-                    System.out.println(pilaSemantica);
-                    break;
-                case "num":
-                    pilaSemantica.push("0"); //PRUEBA SUJETO A CAMBIOS OBVIOS
-                    System.out.println(pilaSemantica);
-                    break;
-                case "+":
-                case "-":
-                    if(pilaOperadores.isEmpty()){
+                switch(token){
+                    case "id":
+                        InfoSimbolo data = tablaSimbolos.obtenerSimbolo(lexico.lexema);
+                        pilaSemantica.push(data.getTipo()+"");          
+                        System.out.println("Caso id "+pilaSemantica);
+                        break;
+                    case "num":
+                        pilaSemantica.push("0"); //PRUEBA SUJETO A CAMBIOS OBVIOS
+                        System.out.println("Caso num "+pilaSemantica);
+                        break;
+                    case "+":
+                    case "-":
+                        if(pilaOperadores.isEmpty()){
+                            pilaOperadores.push(token);
+                            System.out.println("Pila Operadores estaba vacia "+pilaOperadores);
+                        }else if(!pilaOperadores.peek().equals("(")){
+                            simboloOp = pilaOperadores.pop();
+                            System.out.println("Pila operadores hace desvergue "+simboloOp);
+                            n2 = Integer.parseInt(pilaSemantica.pop());
+                            n1 = Integer.parseInt(pilaSemantica.pop());
+                            nR = resSemanticoA[n1][n2];
+                            if(nR.equals("-1")){
+
+                            }
+                            pilaSemantica.push(nR);
+                            pilaOperadores.push(token);
+                        }else{
+                            pilaOperadores.push(token);
+                            System.out.println("Pila operadores tenia { "+pilaOperadores);
+                        }
+                        break;
+                    case "*":
+                    case "/":
+                        if(pilaOperadores.isEmpty()){
+                            pilaOperadores.push(token);
+                            System.out.println("Pila Operadores estaba vacia "+pilaOperadores);
+                        }else if(!pilaOperadores.peek().equals("(") && !pilaOperadores.peek().equals("*") && !pilaOperadores.peek().equals("/")){
+                            simboloOp = pilaOperadores.pop();
+                            System.out.println("Pila operadores hace desvergue "+simboloOp);
+                            n2 = Integer.parseInt(pilaSemantica.pop());
+                            n1 = Integer.parseInt(pilaSemantica.pop());
+                            nR = resSemanticoA[n1][n2];
+                            if(nR.equals("-1")){
+                                
+                            }
+                            pilaSemantica.push(nR);
+                            pilaOperadores.push(token);
+                        }else{
+                            pilaOperadores.push(token);
+                            System.out.println("Pila operadores tenia { "+pilaOperadores);
+                        }
+                        break;
+                    case "(":
                         pilaOperadores.push(token);
-                        System.out.println(pilaOperadores);
-                    }else if(pilaOperadores.peek()!="("){
-                        simboloOp = pilaOperadores.pop();
-                        System.out.println(simboloOp);
-                    }else
-                        pilaOperadores.push(token);
-                        System.out.println(pilaOperadores);
-                    break;
-                case "*":
-                case "/":
-                    if(pilaOperadores.isEmpty()){
-                        pilaOperadores.push(token);
-                        System.out.println(pilaOperadores);
-                    }else if(pilaOperadores.peek()!="(" || pilaOperadores.peek()!="*" || pilaOperadores.peek()!="/"){
-                        simboloOp = pilaOperadores.pop();
-                        System.out.println(simboloOp);
-                    }else
-                        pilaOperadores.push(token);
-                        System.out.println(pilaOperadores);
-                    break;
-                case "(":
-                    pilaOperadores.push(token);
-                    break;
-                case ")":
-                    break;
-            }
+                        break;
+                    case ")":
+                        while(pilaSemantica.peek()!="("){
+                            simboloOp = pilaOperadores.pop();
+                            System.out.println("Pila operadores hace desvergue hasta tener ( "+simboloOp);
+                            n2 = Integer.parseInt(pilaSemantica.pop());
+                            n1 = Integer.parseInt(pilaSemantica.pop());
+                            nR = resSemanticoA[n1][n2];
+                            if(nR.equals("-1")){
+                                
+                            }
+                        }
+                        break;
+                }
         }
         txtSintactico.append(pilaPrincipal + "\t Desplaza "+token+" a "+accionTabla+"\n");
         pilaPrincipal.push(token);
@@ -309,6 +348,8 @@ public class principal extends javax.swing.JFrame {
 
     private void InicializarPilas() {
         pilaPrincipal.clear();
+        pilaOperadores.clear();
+        pilaSemantica.clear();
         pilaPrincipal.push("$");
         pilaPrincipal.push("I0");
     }

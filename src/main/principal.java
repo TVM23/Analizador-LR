@@ -246,8 +246,15 @@ public class principal extends javax.swing.JFrame {
                             n2 = Integer.parseInt(pilaSemantica.pop());
                             n1 = Integer.parseInt(pilaSemantica.pop());
                             nR = resSemanticoA[n1][n2];
+                            System.out.println(nR);
                             if(nR.equals("-1")){
-
+                                String errorID = "Error semantico detectado: Operaciones sobre tipos"
+                                + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
+                                + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
+                                txtSemantico.append(errorID);
+                                txtAreaTerminal.append(errorID);
+                                band = false;
+                                return;
                             }
                             pilaSemantica.push(nR);
                             pilaOperadores.push(token);
@@ -261,27 +268,36 @@ public class principal extends javax.swing.JFrame {
                         if(pilaOperadores.isEmpty()){
                             pilaOperadores.push(token);
                             System.out.println("Pila Operadores estaba vacia "+pilaOperadores);
-                        }else if(!pilaOperadores.peek().equals("(") && !pilaOperadores.peek().equals("*") && !pilaOperadores.peek().equals("/")){
+                        }else if(!pilaOperadores.peek().equals("(") && !pilaOperadores.peek().equals("-") && !pilaOperadores.peek().equals("+")){
                             simboloOp = pilaOperadores.pop();
                             System.out.println("Pila operadores hace desvergue "+simboloOp);
                             n2 = Integer.parseInt(pilaSemantica.pop());
                             n1 = Integer.parseInt(pilaSemantica.pop());
                             nR = resSemanticoA[n1][n2];
+                            System.out.println(nR);
                             if(nR.equals("-1")){
-                                
+                                String errorID = "Error semantico detectado: Operaciones sobre tipos"
+                                + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
+                                + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
+                                txtSemantico.append(errorID);
+                                txtAreaTerminal.append(errorID);
+                                band = false;
+                                return;
                             }
                             pilaSemantica.push(nR);
                             pilaOperadores.push(token);
                         }else{
                             pilaOperadores.push(token);
-                            System.out.println("Pila operadores tenia { "+pilaOperadores);
+                            System.out.println("Pila operadores tenia ( o habia algo de menor importancia"+pilaOperadores);
                         }
                         break;
                     case "(":
                         pilaOperadores.push(token);
+                        System.out.println("Se inserta ( "+pilaOperadores);
                         break;
                     case ")":
-                        while(pilaSemantica.peek()!="("){
+                        while(!pilaOperadores.peek().equals("(")){
+                            System.out.println(pilaOperadores.peek());
                             simboloOp = pilaOperadores.pop();
                             System.out.println("Pila operadores hace desvergue hasta tener ( "+simboloOp);
                             n2 = Integer.parseInt(pilaSemantica.pop());
@@ -290,6 +306,7 @@ public class principal extends javax.swing.JFrame {
                             if(nR.equals("-1")){
                                 
                             }
+                            pilaSemantica.push(nR);
                         }
                         break;
                 }

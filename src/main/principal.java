@@ -298,70 +298,76 @@ public class principal extends javax.swing.JFrame {
                         break;
                     case "+":
                     case "-":
-                        if(pilaOperadores.isEmpty()){
-                            pilaOperadores.push(token);
-                            System.out.println("Pila Operadores estaba vacia "+pilaOperadores);
-                        }else if(pilaOperadores.peek().equals("(")){
-                            pilaOperadores.push(token);
-                            System.out.println("Pila operadores tenia ( "+pilaOperadores);
-                        }else{
-                            System.out.println(pilaOperadores);
-                            System.out.println(!pilaOperadores.peek().equals("(")+" massa");
-                            while(!pilaOperadores.peek().equals("(") && !pilaOperadores.isEmpty()){
-                                simboloOp = pilaOperadores.pop();
-                                System.out.println("Pila operadores hace desvergue "+simboloOp);
-                                n2 = Integer.parseInt(pilaSemantica.pop());
-                                n1 = Integer.parseInt(pilaSemantica.pop());
-                                nR = resSemanticoA[n1][n2];
-                                System.out.println(nR);
-                                if(nR.equals("-1")){
-                                    String errorID = "Error semantico detectado: Operaciones sobre tipos"
-                                    + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
-                                    + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
-                                    txtSemantico.append(errorID);
-                                    txtAreaTerminal.append(errorID);
-                                    band = false;
-                                    return;
-                                }
-                                pilaSemantica.push(nR);
+                        while(true){
+                            if(pilaOperadores.isEmpty()){
+                                pilaOperadores.push(token);
+                                System.out.println("Pila Operadores estaba vacia "+pilaOperadores);
+                                return;
+                            }else if(pilaOperadores.peek().equals("(")){
+                                pilaOperadores.push(token);
+                                System.out.println("Pila operadores tenia ( "+pilaOperadores);
+                                return;
+                            }else{
+                                System.out.println(pilaOperadores);
+                                System.out.println(!pilaOperadores.peek().equals("(")+" massa");
+                                //while(!pilaOperadores.peek().equals("(") && !pilaOperadores.isEmpty()){
+                                    simboloOp = pilaOperadores.pop();
+                                    System.out.println("Pila operadores hace desvergue "+simboloOp);
+                                    n2 = Integer.parseInt(pilaSemantica.pop());
+                                    n1 = Integer.parseInt(pilaSemantica.pop());
+                                    nR = resSemanticoA[n1][n2];
+                                    System.out.println(nR);
+                                    if(nR.equals("-1")){
+                                        String errorID = "Error semantico detectado: Operaciones sobre tipos"
+                                        + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
+                                        + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
+                                        txtSemantico.append(errorID);
+                                        txtAreaTerminal.append(errorID);
+                                        band = false;
+                                        return;
+                                    }
+                                    pilaSemantica.push(nR);
+                                //}
+                                //pilaOperadores.push(token);
                             }
-                            pilaOperadores.push(token);
+                            break;
                         }
-                        break;
                     case "*":
                     case "/":
-                        if(pilaOperadores.isEmpty()){
-                            pilaOperadores.push(token);
-                            System.out.println("Pila Operadores estaba vacia "+pilaOperadores);
-                        }else if(pilaOperadores.peek().equals("-") || pilaOperadores.peek().equals("+")){
-                            pilaOperadores.push(token);
-                            System.out.println("Pila operadores tenia ( o habia algo de menor importancia "+pilaOperadores);
-                        }else{
-                            System.out.println(pilaOperadores);
-                            System.out.println(!pilaOperadores.peek().equals("(")+" dassd");
-                            System.out.println((!pilaOperadores.peek().equals("-") && !pilaOperadores.peek().equals("+")));
-                            while(!pilaOperadores.peek().equals("(") && (!pilaOperadores.peek().equals("-") && !pilaOperadores.peek().equals("+"))){
-                                simboloOp = pilaOperadores.pop();
-                                System.out.println("Pila operadores hace desvergue (es * o /) "+simboloOp);
-                                System.out.println("Token a insertar " + token);
-                                n2 = Integer.parseInt(pilaSemantica.pop());
-                                n1 = Integer.parseInt(pilaSemantica.pop());
-                                nR = resSemanticoA[n1][n2];
-                                System.out.println(nR);
-                                if(nR.equals("-1")){
-                                    String errorID = "Error semantico detectado: Operaciones sobre tipos"
-                                    + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
-                                    + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
-                                    txtSemantico.append(errorID);
-                                    txtAreaTerminal.append(errorID);
-                                    band = false;
-                                    return;
-                                }
-                                pilaSemantica.push(nR);
+                        while(true){
+                            if(pilaOperadores.isEmpty()){
+                                pilaOperadores.push(token);
+                                System.out.println("Pila Operadores estaba vacia "+pilaOperadores);
+                            }else if(pilaOperadores.peek().equals("-") || pilaOperadores.peek().equals("+")){
+                                pilaOperadores.push(token);
+                                System.out.println("Pila operadores tenia ( o habia algo de menor importancia "+pilaOperadores);
+                            }else{
+                                System.out.println(pilaOperadores);
+                                System.out.println(!pilaOperadores.peek().equals("(")+" dassd");
+                                System.out.println((!pilaOperadores.peek().equals("-") && !pilaOperadores.peek().equals("+")));
+                                //while(!pilaOperadores.peek().equals("(") && (!pilaOperadores.peek().equals("-") && !pilaOperadores.peek().equals("+"))){
+                                    simboloOp = pilaOperadores.pop();
+                                    System.out.println("Pila operadores hace desvergue (es * o /) "+simboloOp);
+                                    System.out.println("Token a insertar " + token);
+                                    n2 = Integer.parseInt(pilaSemantica.pop());
+                                    n1 = Integer.parseInt(pilaSemantica.pop());
+                                    nR = resSemanticoA[n1][n2];
+                                    System.out.println(nR);
+                                    if(nR.equals("-1")){
+                                        String errorID = "Error semantico detectado: Operaciones sobre tipos"
+                                        + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
+                                        + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
+                                        txtSemantico.append(errorID);
+                                        txtAreaTerminal.append(errorID);
+                                        band = false;
+                                        return;
+                                    }
+                                    pilaSemantica.push(nR);
+                                //}
+                                //pilaOperadores.push(token);
                             }
-                            pilaOperadores.push(token);
+                            break;
                         }
-                        break;
                     case "(":
                         pilaOperadores.push(token);
                         System.out.println("Se inserta ( "+pilaOperadores);
@@ -386,6 +392,37 @@ public class principal extends javax.swing.JFrame {
                             pilaSemantica.push(nR);
                         }
                         break;
+                    case ";":
+                        boolean aceptaTipo;
+                        while(pilaSemantica.size()>2){
+                            n2 = Integer.parseInt(pilaSemantica.pop());
+                            n1 = Integer.parseInt(pilaSemantica.pop());
+                            nR = resSemanticoA[n1][n2];
+                            System.out.println(nR);
+                            if(nR.equals("-1")){
+                                String errorID = "Error semantico detectado: Operaciones sobre tipos"
+                                + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
+                                + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
+                                txtSemantico.append(errorID);
+                                txtAreaTerminal.append(errorID);
+                                band = false;
+                                return;
+                            }
+                            pilaSemantica.push(nR);
+                        }
+                        n2 = Integer.parseInt(pilaSemantica.pop());
+                        n1 = Integer.parseInt(pilaSemantica.pop());
+                        aceptaTipo = permiteTipoSemantico[n1][n2];
+                        if(aceptaTipo==false){
+                            String errorID = "Error semantico detectado: Asignacion de un valor"
+                            + " a un id inconmpatible en la linea "+ (lexico.posLinea+1) + "\n"
+                            + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
+                            txtSemantico.append(errorID);
+                            txtAreaTerminal.append(errorID);
+                            band = false;
+                            return;
+                        }
+                        System.out.println("NO HAY PEDO XD");
                 }
         }
     }

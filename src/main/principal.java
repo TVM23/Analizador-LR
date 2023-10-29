@@ -101,24 +101,18 @@ public class principal extends javax.swing.JFrame {
     private void RegistroTablaSimb(String valor){
         ChecarSiRegistra(valor);
         String nombreSimbolo = lexico.lexema;
-        InfoSimbolo info;
         if(valor.equals("id") && siRegistra==true){ //Este if es para ver si se registra el id
-            //System.out.println(nombreSimbolo);
-            //InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoSimbolo, valorSimbolo, lexico.posLinea+1);
-            InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoValor, null, lexico.posLinea+1);
-            tablaSimbolos.agregarSimbolo(nombreSimbolo, infoSimbolo);
-        }else if(valor.equals("id") && siRegistra==false){ //este if es para ver si estamos declarando
             if(tablaSimbolos.contieneSimbolo(nombreSimbolo)){ //Este if sirve checar si un id si se declaro
-                info = tablaSimbolos.obtenerSimbolo(nombreSimbolo);
-                //System.out.println(info.getTipo());
-            }else{
-                String errorID = "Error detectado: La variable \""+nombreSimbolo+"\" en la linea "+ 
-                (lexico.posLinea+1) +" no se declaro" + "\n"
+                String errorID = "Error detectado: El nombre de la variable \""+nombreSimbolo+"\" en la linea "+ 
+                (lexico.posLinea+1) +" se ha declarado multiples veces" + "\n"
                 + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR DE IDENTIFICADOR DETECTADO" + "\n";
                 txtSemantico.append(errorID);
                 txtAreaTerminal.append(errorID);
                 band = false;
             }
+            //InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoSimbolo, valorSimbolo, lexico.posLinea+1);
+            InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoValor, null, lexico.posLinea+1);
+            tablaSimbolos.agregarSimbolo(nombreSimbolo, infoSimbolo);
         }
     }
     
@@ -229,10 +223,10 @@ public class principal extends javax.swing.JFrame {
     }
     
     private void EstadoDesp(String accionTabla, String token){
-        Semantico(token);
         txtSintactico.append(pilaPrincipal + "\t Desplaza "+token+" a "+accionTabla+"\n");
         pilaPrincipal.push(token);
         pilaPrincipal.push(accionTabla);
+        Semantico(token);
     }
     
     private void EstadoProd(String accionTabla){
@@ -271,9 +265,9 @@ public class principal extends javax.swing.JFrame {
     private String SimbEsperado(String tok, int numEstado){
         String error;
         if(tok.equals("$"))
-            error = " se acabo la cadena de texto pero aun se esperaba: ";
+            error = " se detecto el final de la cadena de entrada pero aun se esperaba: ";
         else
-            error = " no se esperaba "+ tok +" y lo que se esperaba era: ";
+            error = " no se esperaba \""+ tok +"\" y lo que se esperaba era: ";
         for(int i=0; i<15; i++){
             if(!tablaSint[numEstado][i].equals("err")){
                 error += simbolosTerm.get(i)+", ";
@@ -288,9 +282,18 @@ public class principal extends javax.swing.JFrame {
         if(iniciaExp==true){
                 switch(token){
                     case "id":
-                        InfoSimbolo data = tablaSimbolos.obtenerSimbolo(lexico.lexema);
-                        pilaSemantica.push(data.getTipo()+"");          
-                        System.out.println("Caso id "+pilaSemantica);
+                        if(tablaSimbolos.contieneSimbolo(lexico.lexema)){ //Este if sirve checar si un id si se declaro
+                            InfoSimbolo data = tablaSimbolos.obtenerSimbolo(lexico.lexema);
+                            pilaSemantica.push(data.getTipo()+"");          
+                            System.out.println("Caso id "+pilaSemantica);
+                        }else{
+                            String errorID = "Error detectado: La variable \""+lexico.lexema+"\" en la linea "+ 
+                            (lexico.posLinea+1) +" no se declaro" + "\n"
+                            + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR DE IDENTIFICADOR DETECTADO" + "\n";
+                            txtSemantico.append(errorID);
+                            txtAreaTerminal.append(errorID);
+                            band = false;
+                        }
                         break;
                     case "num":
                         pilaSemantica.push("0"); //PRUEBA SUJETO A CAMBIOS OBVIOS
@@ -338,9 +341,11 @@ public class principal extends javax.swing.JFrame {
                             if(pilaOperadores.isEmpty()){
                                 pilaOperadores.push(token);
                                 System.out.println("Pila Operadores estaba vacia "+pilaOperadores);
-                            }else if(pilaOperadores.peek().equals("-") || pilaOperadores.peek().equals("+")){
+                                return;
+                            }else if(pilaOperadores.peek().equals("(") || pilaOperadores.peek().equals("-") || pilaOperadores.peek().equals("+")){
                                 pilaOperadores.push(token);
                                 System.out.println("Pila operadores tenia ( o habia algo de menor importancia "+pilaOperadores);
+                                return;
                             }else{
                                 System.out.println(pilaOperadores);
                                 System.out.println(!pilaOperadores.peek().equals("(")+" dassd");
@@ -354,7 +359,7 @@ public class principal extends javax.swing.JFrame {
                                     nR = resSemanticoA[n1][n2];
                                     System.out.println(nR);
                                     if(nR.equals("-1")){
-                                        String errorID = "Error semantico detectado: Operaciones sobre tipos"
+                                        String errorID = "vvvError semantico detectado: Operaciones sobre tipos"
                                         + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
                                         + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
                                         txtSemantico.append(errorID);
@@ -381,7 +386,7 @@ public class principal extends javax.swing.JFrame {
                             n1 = Integer.parseInt(pilaSemantica.pop());
                             nR = resSemanticoA[n1][n2];
                             if(nR.equals("-1")){
-                                String errorID = "Error semantico detectado: Operaciones sobre tipos"
+                                String errorID = "aaaaError semantico detectado: Operaciones sobre tipos"
                                 + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
                                 + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
                                 txtSemantico.append(errorID);
@@ -400,7 +405,7 @@ public class principal extends javax.swing.JFrame {
                             nR = resSemanticoA[n1][n2];
                             System.out.println(nR);
                             if(nR.equals("-1")){
-                                String errorID = "Error semantico detectado: Operaciones sobre tipos"
+                                String errorID = "qqqError semantico detectado: Operaciones sobre tipos"
                                 + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
                                 + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
                                 txtSemantico.append(errorID);
@@ -415,7 +420,7 @@ public class principal extends javax.swing.JFrame {
                         aceptaTipo = permiteTipoSemantico[n1][n2];
                         if(aceptaTipo==false){
                             String errorID = "Error semantico detectado: Asignacion de un valor"
-                            + " a un id inconmpatible en la linea "+ (lexico.posLinea+1) + "\n"
+                            + " a un id incompatible en la linea "+ (lexico.posLinea+1) + "\n"
                             + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
                             txtSemantico.append(errorID);
                             txtAreaTerminal.append(errorID);
@@ -433,6 +438,8 @@ public class principal extends javax.swing.JFrame {
         pilaSemantica.clear();
         pilaPrincipal.push("$");
         pilaPrincipal.push("I0");
+        bandpc=false;
+        iniciaExp = false;
     }
 
     private void Inicio() {

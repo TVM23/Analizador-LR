@@ -270,7 +270,7 @@ public class principal extends javax.swing.JFrame {
     }
     
     private void Semantico(String token){
-        String simboloOp, nR, recSem="";
+        String simboloOp, nR;
         int  n2, n1;
         if(iniciaExp==true){
                 switch(token){
@@ -291,12 +291,12 @@ public class principal extends javax.swing.JFrame {
                         while(true){
                             if(pilaOperadores.isEmpty()){
                                 pilaOperadores.push(token);
-                                txtSemantico.append("Se ingresa el simbolo "+token+" "+pilaOperadores+"\n");
-                                return;
+                                txtSemantico.append("Se ingresa el simbolo "+token+" y la pila queda "+pilaOperadores+"\n");
+                                break;
                             }else if(pilaOperadores.peek().equals("(")){
                                 pilaOperadores.push(token);
-                                txtSemantico.append("Se ingresa el simbolo "+token+" "+pilaOperadores+"\n");
-                                return;
+                                txtSemantico.append("Se ingresa el simbolo "+token+" y la pila queda "+pilaOperadores+"\n");
+                                break;
                             }else{
                                 txtSemantico.append("Se encuentra simbolo mayor o igual "+
                                 "importancia a \""+token+"\" en la pila "+pilaOperadores+"\n");
@@ -312,19 +312,19 @@ public class principal extends javax.swing.JFrame {
                                 txtSemantico.append("Se realiza operacion n1 "+simboloOp+
                                 " n2"+" y la pila queda "+pilaSemantica+"\n");
                             }
-                            break;
                         }
+                        break;
                     case "*":
                     case "/":
                         while(true){
                             if(pilaOperadores.isEmpty()){
                                 pilaOperadores.push(token);
-                                txtSemantico.append("Se ingresa el simbolo "+token+" "+pilaOperadores+"\n");
-                                return;
+                                txtSemantico.append("Se ingresa el simbolo "+token+" y la pila queda "+pilaOperadores+"\n");
+                                break;
                             }else if(pilaOperadores.peek().equals("(") || pilaOperadores.peek().equals("-") || pilaOperadores.peek().equals("+")){
                                 pilaOperadores.push(token);
-                                txtSemantico.append("Se ingresa el simbolo e"+token+" "+pilaOperadores+"\n");
-                                return;
+                                txtSemantico.append("Se ingresa el simbolo "+token+" y la pila queda "+pilaOperadores+"\n");
+                                break;
                             }else{
                                 txtSemantico.append("Se encuentra simbolo de mayor o igual "+
                                 "importancia a \""+token+"\" en la pila "+pilaOperadores+"\n");
@@ -340,8 +340,8 @@ public class principal extends javax.swing.JFrame {
                                 txtSemantico.append("Se realiza operacion n1 "+simboloOp+
                                 " n2"+" y la pila queda "+pilaSemantica+"\n");
                             }
-                            break;
                         }
+                        break;
                     case "(":
                         pilaOperadores.push(token);
                         txtSemantico.append("Se inserta \"(\" "+pilaOperadores+"\n");
@@ -370,8 +370,8 @@ public class principal extends javax.swing.JFrame {
                         boolean aceptaTipo;
                         txtSemantico.append("Se recibe ; y se acaba expresion \n");
                         while(pilaSemantica.size()>2){
-                            txtSemantico.append("Se encuentra simbolo de mayor o igual "+
-                                "importancia a \""+token+"\" en la pila "+pilaOperadores+"\n");
+                            txtSemantico.append("Se encuentra el simbolo \""+
+                                    pilaOperadores+"\" en la pila "+pilaOperadores+"\n");
                             simboloOp = pilaOperadores.pop();
                             n2 = Integer.parseInt(pilaSemantica.pop());
                             n1 = Integer.parseInt(pilaSemantica.pop());

@@ -23,8 +23,8 @@ public class principal extends javax.swing.JFrame {
     private SistemaArch archivo;
     Lexer lexico;
     TablaSimbolos tablaSimbolos;
-    public boolean band = true, siRegistra, bandpc=false, iniciaExp = false;
-    public Stack<String> pilaPrincipal = new Stack();
+    public boolean band = true,  bandpc=false, iniciaExp = false;
+    public Stack<String> pilaSintactica = new Stack();
     public Stack<String> pilaOperadores = new Stack();
     public Stack<String> pilaSemantica = new Stack();
     public String resSemanticoA[][] = {
@@ -101,14 +101,9 @@ public class principal extends javax.swing.JFrame {
     private void RegistroTablaSimb(String valor){
         ChecarSiRegistra(valor);
         String nombreSimbolo = lexico.lexema;
-        if(valor.equals("id") && siRegistra==true){ //Este if es para ver si se registra el id
+        if(valor.equals("id") && iniciaExp==false){ //Este if es para ver si se registra el id
             if(tablaSimbolos.contieneSimbolo(nombreSimbolo)){ //Este if sirve checar si un id si se declaro
-                String errorID = "Error detectado: El nombre de la variable \""+nombreSimbolo+"\" en la linea "+ 
-                (lexico.posLinea+1) +" se ha declarado multiples veces" + "\n"
-                + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR DE IDENTIFICADOR DETECTADO" + "\n";
-                txtSemantico.append(errorID);
-                txtAreaTerminal.append(errorID);
-                band = false;
+                ErrorSemantico(3);
             }
             //InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoSimbolo, valorSimbolo, lexico.posLinea+1);
             InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoValor, null, lexico.posLinea+1);
@@ -117,26 +112,29 @@ public class principal extends javax.swing.JFrame {
     }
     
     private void ChecarSiRegistra(String valor){
-        if(valor.equals(";")){
-            siRegistra = false;
-            bandpc = true;
-        }else if(valor.equals("int")||valor.equals("float")||valor.equals("char")){
-            siRegistra = true;
-            switch (valor) {
+        if(iniciaExp==false){
+            switch(valor){
+                case ";":
+                    bandpc = true;
+                    break;
                 case "int":
                     tipoValor = 0;
+                    bandpc = false;
                     break;
                 case "float":
                     tipoValor = 1;
+                    bandpc = false;
                     break;
                 case "char":
                     tipoValor = 2;
+                    bandpc = false;
                     break;
+                case "id":
+                    if(bandpc==true)
+                        iniciaExp = true;
+                    else if(pilaSintactica.peek().equals("I0"))
+                        ErrorSemantico(2);
             }
-            bandpc = false;
-        }
-        if(valor.equals("id") && bandpc==true){
-            iniciaExp = true;
         }
     }
 
@@ -147,22 +145,18 @@ public class principal extends javax.swing.JFrame {
             BufferedReader entrada = new BufferedReader(new InputStreamReader(new FileInputStream(codigo), "UTF-8"))) {
             byte[] bytes = txtCodigoBase.getText().getBytes();
             output.write(bytes);
-
             lexico = new Lexer(entrada);
             String lexRec = "";
             String errorLex = "";
-
             while (!lexico.yyatEOF() && band) {
                 Tokens token = lexico.yylex();
                 int lineaActual = lexico.posLinea + 1;
-
                 if (token == null) {
                     AnalisisSintactico("$", lineaActual);
                     lexRec += "Análisis léxico finalizado";
                     txtLexico.setText(lexRec);
                     return;
                 }
-
                 switch (token) {
                     case Error -> {
                         lexRec += "Error léxico en la línea " + lineaActual +
@@ -195,10 +189,9 @@ public class principal extends javax.swing.JFrame {
     private void AnalisisSintactico(String token, int nlinea) {
         String elementoPilaP, accionTabla;
         int numEstado, columnaTabla;
-        //RegistroTablaSimb(token);
         if(band==true){
             while (true) {
-                elementoPilaP = pilaPrincipal.peek();
+                elementoPilaP = pilaSintactica.peek();
                 numEstado = Integer.parseInt(elementoPilaP.substring(1));
                 columnaTabla = columnas.indexOf(token);
                 accionTabla = tablaSint[numEstado][columnaTabla];
@@ -223,9 +216,9 @@ public class principal extends javax.swing.JFrame {
     }
     
     private void EstadoDesp(String accionTabla, String token){
-        txtSintactico.append(pilaPrincipal + "\t Desplaza "+token+" a "+accionTabla+"\n");
-        pilaPrincipal.push(token);
-        pilaPrincipal.push(accionTabla);
+        txtSintactico.append(pilaSintactica + "\t Desplaza "+token+" a "+accionTabla+"\n");
+        pilaSintactica.push(token);
+        pilaSintactica.push(accionTabla);
         Semantico(token);
     }
     
@@ -235,25 +228,25 @@ public class principal extends javax.swing.JFrame {
         prod = produccionesP[Integer.parseInt(accionTabla.substring(1))][0];
         prodRedux = produccionesP[Integer.parseInt(accionTabla.substring(1))][1];
         String pr[] = prodRedux.split(" ");
-        txtSintactico.append(pilaPrincipal + "\t Se  genera "+accionTabla+" "+prod+"->"+prodRedux+"\n");
+        txtSintactico.append(pilaSintactica + "\t Se  genera "+accionTabla+" "+prod+"->"+prodRedux+"\n");
         for(int i = 0; i<pr.length*2; i++) {
-            pilaPrincipal.pop();
+            pilaSintactica.pop();
         }
-        nuevoEstado = Integer.parseInt(pilaPrincipal.peek().substring(1));
-        pilaPrincipal.push(prod);
-        pilaPrincipal.push(tablaSint[nuevoEstado][columnas.indexOf(prod)]);
+        nuevoEstado = Integer.parseInt(pilaSintactica.peek().substring(1));
+        pilaSintactica.push(prod);
+        pilaSintactica.push(tablaSint[nuevoEstado][columnas.indexOf(prod)]);
     }
     
     private void ProduccionCero(String accionTabla){
         String fin ="COMPILACION FINALIZADA CON EXITO";
         String sintFin = "Analisis Sintactico Finalizado";
-        txtSintactico.append(pilaPrincipal +  "\t Se genera " + accionTabla + ". Se acepta la cadena \n");
+        txtSintactico.append(pilaSintactica +  "\t Se genera " + accionTabla + ". Se acepta la cadena \n");
         txtSintactico.append(sintFin);
         txtAreaTerminal.append(fin);
     }
     
     private void ErrorSint(int nlinea, int numEstado, String token){
-        txtSintactico.append(pilaPrincipal + "\t Se genera un error \n");
+        txtSintactico.append(pilaSintactica + "\t Se genera un error \n");
         String errorSint = "Error sintactico en la linea " + (nlinea) 
         + SimbEsperado(token, numEstado) + "\n"
         + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SINTACTICO DETECTADO" + "\n";
@@ -277,61 +270,47 @@ public class principal extends javax.swing.JFrame {
     }
     
     private void Semantico(String token){
-        String simboloOp, nR;
+        String simboloOp, nR, recSem="";
         int  n2, n1;
         if(iniciaExp==true){
                 switch(token){
                     case "id":
                         if(tablaSimbolos.contieneSimbolo(lexico.lexema)){ //Este if sirve checar si un id si se declaro
                             InfoSimbolo data = tablaSimbolos.obtenerSimbolo(lexico.lexema);
-                            pilaSemantica.push(data.getTipo()+"");          
-                            System.out.println("Caso id "+pilaSemantica);
-                        }else{
-                            String errorID = "Error detectado: La variable \""+lexico.lexema+"\" en la linea "+ 
-                            (lexico.posLinea+1) +" no se declaro" + "\n"
-                            + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR DE IDENTIFICADOR DETECTADO" + "\n";
-                            txtSemantico.append(errorID);
-                            txtAreaTerminal.append(errorID);
-                            band = false;
-                        }
+                            pilaSemantica.push(data.getTipo()+""); 
+                            txtSemantico.append("Se ingresa un id "+pilaSemantica+"\n");
+                        }else
+                            ErrorSemantico(2);
                         break;
                     case "num":
                         pilaSemantica.push("0"); //PRUEBA SUJETO A CAMBIOS OBVIOS
-                        System.out.println("Caso num "+pilaSemantica);
+                        txtSemantico.append("Se ingresa un numero "+pilaSemantica+"\n");
                         break;
                     case "+":
                     case "-":
                         while(true){
                             if(pilaOperadores.isEmpty()){
                                 pilaOperadores.push(token);
-                                System.out.println("Pila Operadores estaba vacia "+pilaOperadores);
+                                txtSemantico.append("Se ingresa el simbolo "+token+" "+pilaOperadores+"\n");
                                 return;
                             }else if(pilaOperadores.peek().equals("(")){
                                 pilaOperadores.push(token);
-                                System.out.println("Pila operadores tenia ( "+pilaOperadores);
+                                txtSemantico.append("Se ingresa el simbolo "+token+" "+pilaOperadores+"\n");
                                 return;
                             }else{
-                                System.out.println(pilaOperadores);
-                                System.out.println(!pilaOperadores.peek().equals("(")+" massa");
-                                //while(!pilaOperadores.peek().equals("(") && !pilaOperadores.isEmpty()){
-                                    simboloOp = pilaOperadores.pop();
-                                    System.out.println("Pila operadores hace desvergue "+simboloOp);
-                                    n2 = Integer.parseInt(pilaSemantica.pop());
-                                    n1 = Integer.parseInt(pilaSemantica.pop());
-                                    nR = resSemanticoA[n1][n2];
-                                    System.out.println(nR);
-                                    if(nR.equals("-1")){
-                                        String errorID = "Error semantico detectado: Operaciones sobre tipos"
-                                        + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
-                                        + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
-                                        txtSemantico.append(errorID);
-                                        txtAreaTerminal.append(errorID);
-                                        band = false;
-                                        return;
-                                    }
-                                    pilaSemantica.push(nR);
-                                //}
-                                //pilaOperadores.push(token);
+                                txtSemantico.append("Se encuentra simbolo mayor o igual "+
+                                "importancia a \""+token+"\" en la pila "+pilaOperadores+"\n");
+                                simboloOp = pilaOperadores.pop();
+                                n2 = Integer.parseInt(pilaSemantica.pop());
+                                n1 = Integer.parseInt(pilaSemantica.pop());
+                                nR = resSemanticoA[n1][n2];
+                                if(nR.equals("-1")){
+                                    ErrorSemantico(1);
+                                    return;
+                                } 
+                                pilaSemantica.push(nR);
+                                txtSemantico.append("Se realiza operacion n1 "+simboloOp+
+                                " n2"+" y la pila queda "+pilaSemantica+"\n");
                             }
                             break;
                         }
@@ -340,106 +319,120 @@ public class principal extends javax.swing.JFrame {
                         while(true){
                             if(pilaOperadores.isEmpty()){
                                 pilaOperadores.push(token);
-                                System.out.println("Pila Operadores estaba vacia "+pilaOperadores);
+                                txtSemantico.append("Se ingresa el simbolo "+token+" "+pilaOperadores+"\n");
                                 return;
                             }else if(pilaOperadores.peek().equals("(") || pilaOperadores.peek().equals("-") || pilaOperadores.peek().equals("+")){
                                 pilaOperadores.push(token);
-                                System.out.println("Pila operadores tenia ( o habia algo de menor importancia "+pilaOperadores);
+                                txtSemantico.append("Se ingresa el simbolo e"+token+" "+pilaOperadores+"\n");
                                 return;
                             }else{
-                                System.out.println(pilaOperadores);
-                                System.out.println(!pilaOperadores.peek().equals("(")+" dassd");
-                                System.out.println((!pilaOperadores.peek().equals("-") && !pilaOperadores.peek().equals("+")));
-                                //while(!pilaOperadores.peek().equals("(") && (!pilaOperadores.peek().equals("-") && !pilaOperadores.peek().equals("+"))){
-                                    simboloOp = pilaOperadores.pop();
-                                    System.out.println("Pila operadores hace desvergue (es * o /) "+simboloOp);
-                                    System.out.println("Token a insertar " + token);
-                                    n2 = Integer.parseInt(pilaSemantica.pop());
-                                    n1 = Integer.parseInt(pilaSemantica.pop());
-                                    nR = resSemanticoA[n1][n2];
-                                    System.out.println(nR);
-                                    if(nR.equals("-1")){
-                                        String errorID = "vvvError semantico detectado: Operaciones sobre tipos"
-                                        + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
-                                        + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
-                                        txtSemantico.append(errorID);
-                                        txtAreaTerminal.append(errorID);
-                                        band = false;
-                                        return;
-                                    }
-                                    pilaSemantica.push(nR);
-                                //}
-                                //pilaOperadores.push(token);
+                                txtSemantico.append("Se encuentra simbolo de mayor o igual "+
+                                "importancia a \""+token+"\" en la pila "+pilaOperadores+"\n");
+                                simboloOp = pilaOperadores.pop();
+                                n2 = Integer.parseInt(pilaSemantica.pop());
+                                n1 = Integer.parseInt(pilaSemantica.pop());
+                                nR = resSemanticoA[n1][n2];
+                                if(nR.equals("-1")){
+                                    ErrorSemantico(1);
+                                    return;
+                                }
+                                pilaSemantica.push(nR);
+                                txtSemantico.append("Se realiza operacion n1 "+simboloOp+
+                                " n2"+" y la pila queda "+pilaSemantica+"\n");
                             }
                             break;
                         }
                     case "(":
                         pilaOperadores.push(token);
-                        System.out.println("Se inserta ( "+pilaOperadores);
+                        txtSemantico.append("Se inserta \"(\" "+pilaOperadores+"\n");
                         break;
                     case ")":
+                        txtSemantico.append("Se recibio "+token+" se realiza operaciones hasta encontrar \"(\" "+pilaOperadores+"\n");
                         while(!pilaOperadores.peek().equals("(")){
-                            System.out.println(pilaOperadores.peek());
+                            txtSemantico.append("Se encuentra simbolo de mayor o igual "+
+                                "importancia a \""+token+"\" en la pila "+pilaOperadores+"\n");
                             simboloOp = pilaOperadores.pop();
-                            System.out.println("Pila operadores hace desvergue hasta tener ( "+simboloOp);
                             n2 = Integer.parseInt(pilaSemantica.pop());
                             n1 = Integer.parseInt(pilaSemantica.pop());
                             nR = resSemanticoA[n1][n2];
                             if(nR.equals("-1")){
-                                String errorID = "aaaaError semantico detectado: Operaciones sobre tipos"
-                                + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
-                                + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
-                                txtSemantico.append(errorID);
-                                txtAreaTerminal.append(errorID);
-                                band = false;
+                                ErrorSemantico(1);
                                 return;
                             }
                             pilaSemantica.push(nR);
+                            txtSemantico.append("Se realiza operacion n1 "+simboloOp+
+                                " n2"+" y la pila queda "+pilaSemantica+"\n");
                         }
+                        txtSemantico.append("Se encuentra "+token+" en la pila y se elimina "+pilaOperadores+"\n");
+                        pilaOperadores.pop();
                         break;
                     case ";":
                         boolean aceptaTipo;
+                        txtSemantico.append("Se recibe ; y se acaba expresion \n");
                         while(pilaSemantica.size()>2){
+                            txtSemantico.append("Se encuentra simbolo de mayor o igual "+
+                                "importancia a \""+token+"\" en la pila "+pilaOperadores+"\n");
+                            simboloOp = pilaOperadores.pop();
                             n2 = Integer.parseInt(pilaSemantica.pop());
                             n1 = Integer.parseInt(pilaSemantica.pop());
                             nR = resSemanticoA[n1][n2];
-                            System.out.println(nR);
                             if(nR.equals("-1")){
-                                String errorID = "qqqError semantico detectado: Operaciones sobre tipos"
-                                + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
-                                + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
-                                txtSemantico.append(errorID);
-                                txtAreaTerminal.append(errorID);
-                                band = false;
+                                ErrorSemantico(1);
                                 return;
                             }
                             pilaSemantica.push(nR);
+                            txtSemantico.append("Se realiza operacion n1 "+simboloOp+
+                            " n2"+" y la pila queda "+pilaSemantica+"\n");
                         }
                         n2 = Integer.parseInt(pilaSemantica.pop());
                         n1 = Integer.parseInt(pilaSemantica.pop());
                         aceptaTipo = permiteTipoSemantico[n1][n2];
+                        txtSemantico.append("Se compara n1 \""+n1+"\" y n2 \""+n2+"\" \n");
                         if(aceptaTipo==false){
-                            String errorID = "Error semantico detectado: Asignacion de un valor"
-                            + " a un id incompatible en la linea "+ (lexico.posLinea+1) + "\n"
-                            + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
-                            txtSemantico.append(errorID);
-                            txtAreaTerminal.append(errorID);
-                            band = false;
+                            ErrorSemantico(4);
                             return;
                         }
-                        System.out.println("NO HAY PEDO XD");
+                        txtSemantico.append("Analisis semantico finalizado");
                 }
         }
     }
+    
+    private void ErrorSemantico(int index){
+        String errorID="";
+        switch(index){
+            case 1:
+                errorID = "Error semantico detectado: Operaciones sobre tipos"
+                + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
+                + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
+                break;
+            case 2:
+                errorID = "Error detectado: La variable \""+lexico.lexema+"\" en la linea "+ 
+                (lexico.posLinea+1) +" no se declaro" + "\n"
+                + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR DE IDENTIFICADOR DETECTADO" + "\n";
+                break;
+            case 3:
+                errorID = "Error detectado: El nombre de la variable \""+lexico.lexema+"\" en la linea "+ 
+                (lexico.posLinea+1) +" ya se habia declarado previamente" + "\n"
+                + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR DE IDENTIFICADOR DETECTADO" + "\n";
+                break;
+            case 4:
+                errorID = "Error semantico detectado: Asignacion de un valor"
+                + " a un id incompatible en la linea "+ (lexico.posLinea+1) + "\n"
+                + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
+        }
+        txtSemantico.append(errorID);
+        txtAreaTerminal.append(errorID);
+        band = false;
+    }
 
     private void InicializarPilas() {
-        pilaPrincipal.clear();
+        pilaSintactica.clear();
         pilaOperadores.clear();
         pilaSemantica.clear();
-        pilaPrincipal.push("$");
-        pilaPrincipal.push("I0");
-        bandpc=false;
+        pilaSintactica.push("$");
+        pilaSintactica.push("I0");
         iniciaExp = false;
+        bandpc = false;
     }
 
     private void Inicio() {

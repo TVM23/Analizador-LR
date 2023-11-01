@@ -411,8 +411,8 @@ public class principal extends javax.swing.JFrame {
                 + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR DE IDENTIFICADOR DETECTADO" + "\n";
                 break;
             case 3:
-                errorID = "Error detectado: El nombre de la variable \""+lexico.lexema+"\" en la linea "+ 
-                (lexico.posLinea+1) +" ya se habia declarado previamente" + "\n"
+                errorID = "Error detectado: El nombre de la variable \""+lexico.lexema+"\" declarada en la linea "+ 
+                (lexico.posLinea+1) +" ya se habia definido previamente" + "\n"
                 + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR DE IDENTIFICADOR DETECTADO" + "\n";
                 break;
             case 4:
@@ -475,6 +475,12 @@ public class principal extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
         txtSemantico = new javax.swing.JTextArea();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        txtIntermedio = new javax.swing.JTextArea();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        txtLexico2 = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -503,14 +509,14 @@ public class principal extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(txtCodigoBase);
 
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(21, 73, 500, 250));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 73, 410, 260));
 
         txtLexico.setEditable(false);
         txtLexico.setColumns(20);
         txtLexico.setRows(5);
         jScrollPane3.setViewportView(txtLexico);
 
-        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 70, 506, 110));
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 70, 380, 110));
 
         jToolBar1.setBackground(new java.awt.Color(255, 255, 255));
         jToolBar1.setRollover(true);
@@ -555,45 +561,65 @@ public class principal extends javax.swing.JFrame {
         });
         jToolBar1.add(jButton6);
 
-        jPanel1.add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1116, 35));
+        jPanel1.add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 35));
 
         txtSintactico.setEditable(false);
         txtSintactico.setColumns(20);
         txtSintactico.setRows(5);
         jScrollPane4.setViewportView(txtSintactico);
 
-        jPanel1.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 210, 506, 120));
+        jPanel1.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 210, 380, 120));
 
         txtAreaTerminal.setEditable(false);
         txtAreaTerminal.setColumns(20);
         txtAreaTerminal.setRows(5);
         jScrollPane1.setViewportView(txtAreaTerminal);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 360, 500, 120));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 360, 410, 120));
 
         jLabel1.setText("Terminal");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, 100, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, 100, -1));
 
         jLabel2.setText("Panel Principal");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 100, -1));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 100, -1));
 
         jLabel3.setText("Análisis Sintáctico");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 190, 100, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 190, 100, -1));
 
         jLabel4.setText("Análisis Léxico");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 50, 100, -1));
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 50, 100, -1));
 
         jLabel5.setText("Análisis Semántico");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 340, 150, -1));
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 340, 150, -1));
 
         txtSemantico.setEditable(false);
         txtSemantico.setColumns(20);
         txtSemantico.setRows(5);
         jScrollPane5.setViewportView(txtSemantico);
 
-        jPanel1.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 360, 506, 120));
+        jPanel1.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 360, 380, 120));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1120, 510));
+        txtIntermedio.setEditable(false);
+        txtIntermedio.setColumns(20);
+        txtIntermedio.setRows(5);
+        jScrollPane6.setViewportView(txtIntermedio);
+
+        jPanel1.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 70, 370, 410));
+
+        jLabel6.setText("Análisis Léxico");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 50, 100, -1));
+
+        jLabel7.setText("Generacion de codigo intermedio");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 50, 200, -1));
+
+        txtLexico2.setEditable(false);
+        txtLexico2.setColumns(20);
+        txtLexico2.setRows(5);
+        jScrollPane7.setViewportView(txtLexico2);
+
+        jPanel1.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 70, 370, 110));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 510));
 
         jMenu1.setText("Archivo");
 
@@ -752,6 +778,8 @@ public class principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
@@ -764,10 +792,14 @@ public class principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTextArea txtAreaTerminal;
     public javax.swing.JTextArea txtCodigoBase;
+    private javax.swing.JTextArea txtIntermedio;
     private javax.swing.JTextArea txtLexico;
+    private javax.swing.JTextArea txtLexico2;
     private javax.swing.JTextArea txtSemantico;
     private javax.swing.JTextArea txtSintactico;
     // End of variables declaration//GEN-END:variables

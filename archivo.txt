@@ -1,2 +1,2 @@
-int x;
-x = 5 + 4 / 4 * 5 - 2;
+int x; float x;
+x = 2;

@@ -1,2 +1,4 @@
-int x; float x;
-x = 2;
+int a, b;
+float c;
+char d;
+a = b+c;

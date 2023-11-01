@@ -97,46 +97,6 @@ public class principal extends javax.swing.JFrame {
     private void procesoComp(){
         AnalisisLexico();
     }
-        
-    private void RegistroTablaSimb(String valor){
-        ChecarSiRegistra(valor);
-        String nombreSimbolo = lexico.lexema;
-        if(valor.equals("id") && iniciaExp==false){ //Este if es para ver si se registra el id
-            if(tablaSimbolos.contieneSimbolo(nombreSimbolo)){ //Este if sirve checar si un id si se declaro
-                ErrorSemantico(3);
-            }
-            //InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoSimbolo, valorSimbolo, lexico.posLinea+1);
-            InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoValor, null, lexico.posLinea+1);
-            tablaSimbolos.agregarSimbolo(nombreSimbolo, infoSimbolo);
-        }
-    }
-    
-    private void ChecarSiRegistra(String valor){
-        if(iniciaExp==false){
-            switch(valor){
-                case ";":
-                    bandpc = true;
-                    break;
-                case "int":
-                    tipoValor = 0;
-                    bandpc = false;
-                    break;
-                case "float":
-                    tipoValor = 1;
-                    bandpc = false;
-                    break;
-                case "char":
-                    tipoValor = 2;
-                    bandpc = false;
-                    break;
-                case "id":
-                    if(bandpc==true)
-                        iniciaExp = true;
-                    else if(pilaSintactica.peek().equals("I0"))
-                        ErrorSemantico(2);
-            }
-        }
-    }
 
     private void AnalisisLexico() {
         tablaSimbolos = new TablaSimbolos();
@@ -214,14 +174,7 @@ public class principal extends javax.swing.JFrame {
             }
         }
     }
-    
-    private void EstadoDesp(String accionTabla, String token){
-        txtSintactico.append(pilaSintactica + "\t Desplaza "+token+" a "+accionTabla+"\n");
-        pilaSintactica.push(token);
-        pilaSintactica.push(accionTabla);
-        Semantico(token);
-    }
-    
+       
     private void EstadoProd(String accionTabla){
         String prod, prodRedux;
         int nuevoEstado;
@@ -267,6 +220,53 @@ public class principal extends javax.swing.JFrame {
             }
         }
         return error;
+    }
+    
+    private void EstadoDesp(String accionTabla, String token){
+        txtSintactico.append(pilaSintactica + "\t Desplaza "+token+" a "+accionTabla+"\n");
+        pilaSintactica.push(token);
+        pilaSintactica.push(accionTabla);
+        Semantico(token);
+    }
+    
+    private void RegistroTablaSimb(String valor){
+        ChecarSiRegistra(valor);
+        String nombreSimbolo = lexico.lexema;
+        if(valor.equals("id") && iniciaExp==false){ //Este if es para ver si se registra el id
+            if(tablaSimbolos.contieneSimbolo(nombreSimbolo)){ //Este if sirve checar si un id si se declaro
+                ErrorSemantico(3);
+            }
+            //InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoSimbolo, valorSimbolo, lexico.posLinea+1);
+            InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoValor, null, lexico.posLinea+1);
+            tablaSimbolos.agregarSimbolo(nombreSimbolo, infoSimbolo);
+        }
+    }
+    
+    private void ChecarSiRegistra(String valor){
+        if(iniciaExp==false){
+            switch(valor){
+                case ";":
+                    bandpc = true;
+                    break;
+                case "int":
+                    tipoValor = 0;
+                    bandpc = false;
+                    break;
+                case "float":
+                    tipoValor = 1;
+                    bandpc = false;
+                    break;
+                case "char":
+                    tipoValor = 2;
+                    bandpc = false;
+                    break;
+                case "id":
+                    if(bandpc==true)
+                        iniciaExp = true;
+                    else if(pilaSintactica.peek().equals("I0"))
+                        ErrorSemantico(2);
+            }
+        }
     }
     
     private void Semantico(String token){

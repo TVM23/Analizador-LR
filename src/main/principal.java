@@ -283,7 +283,7 @@ public class principal extends javax.swing.JFrame {
                             ErrorSemantico(2);
                         break;
                     case "num":
-                        pilaSemantica.push("0"); //PRUEBA SUJETO A CAMBIOS OBVIOS
+                        pilaSemantica.push(lexico.tipoNum); //PRUEBA SUJETO A CAMBIOS OBVIOS
                         txtSemantico.append("Se ingresa un numero "+pilaSemantica+"\n");
                         break;
                     case "+":
@@ -400,23 +400,16 @@ public class principal extends javax.swing.JFrame {
     private void ErrorSemantico(int index){
         String errorID="";
         switch(index){
-            case 1:
-                errorID = "Error semantico detectado: Operaciones sobre tipos"
+            case 1 -> errorID = "Error semantico detectado: Operaciones sobre tipos"
                 + " de datos incompatibles en la linea "+ (lexico.posLinea+1) + "\n"
                 + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
-                break;
-            case 2:
-                errorID = "Error detectado: La variable \""+lexico.lexema+"\" en la linea "+ 
+            case 2 -> errorID = "Error detectado: La variable \""+lexico.lexema+"\" en la linea "+ 
                 (lexico.posLinea+1) +" no se declaro" + "\n"
                 + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR DE IDENTIFICADOR DETECTADO" + "\n";
-                break;
-            case 3:
-                errorID = "Error detectado: El nombre de la variable \""+lexico.lexema+"\" declarada en la linea "+ 
+            case 3 -> errorID = "Error detectado: El nombre de la variable \""+lexico.lexema+"\" declarada en la linea "+ 
                 (lexico.posLinea+1) +" ya se habia definido previamente" + "\n"
                 + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR DE IDENTIFICADOR DETECTADO" + "\n";
-                break;
-            case 4:
-                errorID = "Error semantico detectado: Asignacion de un valor"
+            case 4 -> errorID = "Error semantico detectado: Asignacion de un valor"
                 + " a un id incompatible en la linea "+ (lexico.posLinea+1) + "\n"
                 + "COMPILACION INTERRUMPIDA DEBIDO AL ERROR SEMANTICO DETECTADO" + "\n";
         }

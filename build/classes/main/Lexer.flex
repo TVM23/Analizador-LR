@@ -11,6 +11,7 @@ import static main.Tokens.*;
 %{
    public int posLinea;
    public String lexema;
+   public String tipoNum; 
 %}
 
 terminadorLinea = \r|\n|\r\n
@@ -36,7 +37,8 @@ id = {letra}({letra}|{digito})*
 
 {caracter} {lexema=yytext(); posLinea=yyline; return car;}
 
-{num} {lexema=yytext(); posLinea=yyline; return num;}
+{entero} {lexema=yytext(); posLinea=yyline; tipoNum="0"; return num;}
+{flotante} {lexema=yytext(); posLinea=yyline; tipoNum="1"; return num;}
 
 /* Simbolos de puntuación o comas */
 "," {lexema=yytext(); posLinea=yyline; return Coma;}

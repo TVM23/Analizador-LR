@@ -311,7 +311,7 @@ class Lexer {
   /* user code: */
    public int posLinea;
    public String lexema;
-   public String tipoNum; 
+   public int tipoNum; 
 
 
   /**
@@ -775,7 +775,7 @@ class Lexer {
           // fall through
           case 28: break;
           case 11:
-            { lexema=yytext(); posLinea=yyline; tipoNum="0"; return num;
+            { lexema=yytext(); posLinea=yyline; tipoNum=0; return num;
             }
           // fall through
           case 29: break;
@@ -795,7 +795,7 @@ class Lexer {
           // fall through
           case 32: break;
           case 15:
-            { lexema=yytext(); posLinea=yyline; tipoNum="1"; return num;
+            { lexema=yytext(); posLinea=yyline; tipoNum=1; return num;
             }
           // fall through
           case 33: break;

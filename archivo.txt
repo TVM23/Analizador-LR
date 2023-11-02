@@ -1,4 +1,2 @@
-int a, b;
-float c;
-char d;
-a = b+c;
+int x, r, s; float d, e, f; char a, b, c;
+d = 40.3;

@@ -21,6 +21,7 @@ public class principal extends javax.swing.JFrame {
     private int tipoValor;
     private LineaNum numlinea;
     private SistemaArch archivo;
+    Intermedio inter=new Intermedio();
     Lexer lexico;
     TablaSimbolos tablaSimbolos;
     public boolean band = true,  bandpc=false, iniciaExp = false;
@@ -239,6 +240,7 @@ public class principal extends javax.swing.JFrame {
             //InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoSimbolo, valorSimbolo, lexico.posLinea+1);
             InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoValor, null, lexico.posLinea+1);
             tablaSimbolos.agregarSimbolo(nombreSimbolo, infoSimbolo);
+            txtIntermedio.append(inter.Declaraciones(nombreSimbolo, infoSimbolo));
         }
     }
     
@@ -279,6 +281,9 @@ public class principal extends javax.swing.JFrame {
                             InfoSimbolo data = tablaSimbolos.obtenerSimbolo(lexico.lexema);
                             pilaSemantica.push(data.getTipo()+""); 
                             txtSemantico.append("Se ingresa un id "+pilaSemantica+"\n");
+                            if(pilaSemantica.size()==1){
+                                
+                            }
                         }else
                             ErrorSemantico(2);
                         break;

@@ -277,13 +277,13 @@ public class principal extends javax.swing.JFrame {
                     case "id":
                         if(tablaSimbolos.contieneSimbolo(lexico.lexema)){ //Este if sirve checar si un id si se declaro
                             InfoSimbolo data = tablaSimbolos.obtenerSimbolo(lexico.lexema);
-                            pilaSemantica.push(data.getTipo()+""); 
+                            pilaSemantica.push(data.getTipo()+"");
                             txtSemantico.append("Se ingresa un id "+pilaSemantica+"\n");
                         }else
                             ErrorSemantico(2);
                         break;
                     case "num":
-                        pilaSemantica.push(lexico.tipoNum); //PRUEBA SUJETO A CAMBIOS OBVIOS
+                        pilaSemantica.push(lexico.tipoNum);
                         txtSemantico.append("Se ingresa un numero "+pilaSemantica+"\n");
                         break;
                     case "+":
@@ -350,7 +350,7 @@ public class principal extends javax.swing.JFrame {
                         txtSemantico.append("Se recibio "+token+" se realiza operaciones hasta encontrar \"(\" "+pilaOperadores+"\n");
                         while(!pilaOperadores.peek().equals("(")){
                             txtSemantico.append("Se encuentra simbolo de mayor o igual "+
-                                "importancia a \""+token+"\" en la pila "+pilaOperadores+"\n");
+                              "importancia a \""+token+"\" en la pila "+pilaOperadores+"\n");
                             simboloOp = pilaOperadores.pop();
                             n2 = Integer.parseInt(pilaSemantica.pop());
                             n1 = Integer.parseInt(pilaSemantica.pop());

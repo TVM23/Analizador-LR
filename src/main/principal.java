@@ -21,6 +21,7 @@ public class principal extends javax.swing.JFrame {
     private int tipoValor;
     private LineaNum numlinea;
     private SistemaArch archivo;
+    Intermedio inter=new Intermedio();
     Lexer lexico;
     TablaSimbolos tablaSimbolos;
     public boolean band = true,  bandpc=false, iniciaExp = false;
@@ -239,6 +240,7 @@ public class principal extends javax.swing.JFrame {
             //InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoSimbolo, valorSimbolo, lexico.posLinea+1);
             InfoSimbolo infoSimbolo = new InfoSimbolo(nombreSimbolo, tipoValor, null, lexico.posLinea+1);
             tablaSimbolos.agregarSimbolo(nombreSimbolo, infoSimbolo);
+            txtIntermedio.append(inter.Declaraciones(nombreSimbolo, infoSimbolo));
         }
     }
     
@@ -279,12 +281,18 @@ public class principal extends javax.swing.JFrame {
                             InfoSimbolo data = tablaSimbolos.obtenerSimbolo(lexico.lexema);
                             pilaSemantica.push(data.getTipo()+"");
                             txtSemantico.append("Se ingresa un id "+pilaSemantica+"\n");
+                            if(pilaSemantica.size()>1){
+                                txtIntermedio.append(inter.asignaciones(lexico.lexema));
+                            }
                         }else
                             ErrorSemantico(2);
                         break;
                     case "num":
                         pilaSemantica.push(lexico.tipoNum);
                         txtSemantico.append("Se ingresa un numero "+pilaSemantica+"\n");
+                        if(pilaSemantica.size()>1){
+                                txtIntermedio.append(inter.asignaciones(lexico.lexema));
+                        }
                         break;
                     case "+":
                     case "-":
@@ -717,6 +725,7 @@ public class principal extends javax.swing.JFrame {
         txtLexico.setText("");
         txtSintactico.setText("");
         txtSemantico.setText("");
+        txtIntermedio.setText("");
     }
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -724,6 +733,7 @@ public class principal extends javax.swing.JFrame {
         Limpiar();
         band = true;
         procesoComp();
+        inter = new Intermedio();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
